@@ -1,5 +1,5 @@
 {
-	"name": "s5d2",
+	"name": "my-guardians2.0",
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
@@ -39,6 +39,7 @@
 		"clsx": "^2.1.1",
 		"lucide-svelte": "^0.446.0",
 		"mode-watcher": "^0.4.1",
+		"svelte-sonner": "^0.3.28",
 		"tailwind-merge": "^2.5.2",
 		"tailwind-variants": "^0.2.1"
 	}

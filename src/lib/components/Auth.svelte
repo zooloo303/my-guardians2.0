@@ -51,7 +51,7 @@
 				<AvatarImage src={`${bngBaseUrl}${avatarUrl}`} alt={user.bungieNetUser.displayName} />
 				<AvatarFallback>{avatarFallback}</AvatarFallback>
 			</Avatar>
-			<span class="text-sm font-medium">Welcome, {user.bungieNetUser.displayName}</span>
+			<span class="text-sm font-medium"> {user.bungieNetUser.displayName}</span>
 		</div>
 		<Button variant="outline" onclick={logout}>Log out</Button>
 	{:else}
