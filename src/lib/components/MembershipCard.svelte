@@ -28,11 +28,11 @@
 		<img src="{bngBaseUrl}{profilePicture}" alt="Bungie Logo" class="mx-auto mb-4" />
 	</CardHeader>
 	<CardContent>
-		<h1>Primary Membership</h1>
+		<h1>Primary Membership Type</h1>
 		<Avatar>
 			<AvatarImage src={`${bngBaseUrl}${iconPath}`} alt={user.bungieNetUser.displayName} />
 			<AvatarFallback>{membershipTypeText}</AvatarFallback>
 		</Avatar>
-		<p>Membership Type: {membershipTypeText}</p>
+		<p>{membershipTypeText}</p>
 	</CardContent>
 </Card>
