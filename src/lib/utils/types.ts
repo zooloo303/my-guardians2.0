@@ -63,6 +63,12 @@ export enum MembershipType {
 	Stadia = 5
 }
 
+// profileData
+export interface ProfileData {
+	characters: Character[];
+	inventoryData: CompleteInventoryResponse;
+	loadouts: Loadout[];
+}
 // Character types
 export enum ClassType {
 	Titan = 0,

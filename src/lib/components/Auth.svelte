@@ -5,6 +5,7 @@
 	import type { UserData } from '$lib/utils/types';
 	import { Button } from '$lib/components/ui/button';
 	import LoaderCircle from 'lucide-svelte/icons/loader-circle';
+	import { LogOut } from 'lucide-svelte/icons';
 	import { Avatar, AvatarImage, AvatarFallback } from '$lib/components/ui/avatar';
 
 	// State
@@ -22,6 +23,9 @@
 		const response = await fetch('/api/auth/logout', { method: 'POST' });
 		if (response.ok) {
 			user = null;
+			window.location.href = '/login';
+		} else {
+			console.error('Logout failed');
 		}
 		isLoading = false;
 	}
@@ -47,8 +51,8 @@
 			</Avatar>
 			<span class="text-sm font-medium"> {user.bungieNetUser.displayName}</span>
 		</div>
-		<Button variant="outline" onclick={logout}>Log out</Button>
+		<Button variant="outline" onclick={logout}><LogOut />Log out</Button>
 	{:else}
-		<Button onclick={login}>Log in with Bungie</Button>
+		<Button onclick={login}>Authenticate with Bungie</Button>
 	{/if}
 </div>
