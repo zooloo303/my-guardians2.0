@@ -1,8 +1,8 @@
 <script lang="ts">
 	import MembershipCard from '$lib/components/MembershipCard.svelte';
+	import type { UserData } from '$lib/utils/types';
 
-	let props = $props();
-	console.log(props);
+	let { data } = $props<{ data: { user: UserData } }>();
 </script>
 
-<MembershipCard />
+<MembershipCard user={data.user} />

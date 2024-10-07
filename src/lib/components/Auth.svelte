@@ -31,7 +31,6 @@
 		user = await fetchUser();
 		isLoading = false;
 	});
-	$inspect(user);
 </script>
 
 <div class="flex items-center space-x-4">

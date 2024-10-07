@@ -49,11 +49,18 @@ export interface DestinyMembership {
 	iconPath: string;
 	isPublic: boolean;
 	membershipId: string;
-	membershipType: number;
+	membershipType: MembershipType;
 }
 export interface UserData {
 	bungieNetUser: BungieNetUser;
 	destinyMemberships: DestinyMembership[];
+}
+export enum MembershipType {
+	Xbox = 1,
+	PlayStation = 2,
+	Steam = 3,
+	Blizzard = 4,
+	Stadia = 5
 }
 
 // Character types
