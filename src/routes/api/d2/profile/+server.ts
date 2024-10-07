@@ -2,16 +2,24 @@ import { BUNGIE_API_KEY } from '$env/static/private';
 import { bngBaseUrl } from '$lib/utils/helpers';
 import type { RequestHandler } from '@sveltejs/kit';
 
-export const GET: RequestHandler = async ({ url, fetch, cookies }) => {
-	const membershipType = url.searchParams.get('membershipType');
-	const destinyMembershipId = url.searchParams.get('destinyMembershipId');
+export const GET: RequestHandler = async ({ fetch, locals, cookies }) => {
+	const { user } = locals;
 	const accessToken = cookies.get('access_token');
+
+	let membershipType: number | null = null;
+	let destinyMembershipId: string | null = null;
+
+	if (user && user.destinyMemberships && user.destinyMemberships.length > 0) {
+		const firstMembership = user.destinyMemberships[0];
+		membershipType = firstMembership.membershipType;
+		destinyMembershipId = firstMembership.membershipId;
+	}
 
 	if (!membershipType || !destinyMembershipId || !accessToken) {
 		return new Response(JSON.stringify({ error: 'Missing required parameters' }), { status: 400 });
 	}
 
-	const apiUrl = `${bngBaseUrl}Platform/Destiny2/${membershipType}/Profile/${destinyMembershipId}/?components=102,200,201,205,206,300,304,305`;
+	const apiUrl = `${bngBaseUrl}/Platform/Destiny2/${membershipType}/Profile/${destinyMembershipId}/?components=102,200,201,205,206,300,304,305`;
 
 	const response = await fetch(apiUrl, {
 		headers: {

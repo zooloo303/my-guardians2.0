@@ -1,4 +1,6 @@
 import { goto } from '$app/navigation';
+import { browser } from '$app/environment';
+import type { UserData } from '$lib/utils/types';
 
 const MAX_RETRIES = 3;
 let retryCount = 0;
@@ -55,8 +57,8 @@ async function refreshToken() {
 		} else {
 			console.error('Invalid expires_in value:', data.expires_in);
 		}
-	} catch (error) {
-		if (error.name === 'AbortError') {
+	} catch (error: unknown) {
+		if (error instanceof Error && error.name === 'AbortError') {
 			console.error('Token refresh timeout');
 		} else {
 			console.error('Failed to refresh token:', error);
@@ -82,4 +84,36 @@ export async function authenticatedFetch(url: string, options: RequestInit = {})
 	}
 
 	return response;
+}
+// Client-side token management
+export function getTokenExpiration(): number {
+	if (!browser) return 0;
+	const tokenExpiration = localStorage.getItem('tokenExpiration');
+	return tokenExpiration ? parseInt(tokenExpiration) : 0;
+}
+
+export function setTokenExpiration(expiresIn: number): void {
+	if (!browser) return;
+	const newExpiration = Date.now() + expiresIn * 1000;
+	localStorage.setItem('tokenExpiration', newExpiration.toString());
+}
+
+export function getAccessToken(): string | null {
+	if (!browser) return null;
+	return localStorage.getItem('access_token');
+}
+
+export async function fetchUser() {
+	await ensureValidToken();
+	let user: UserData | null = null;
+	const response = await fetch('/api/auth/user');
+	if (response.ok) {
+		user = await response.json();
+		if (user && user.destinyMemberships && user.destinyMemberships.length > 0) {
+			const membershipType = user.destinyMemberships[0];
+			localStorage.setItem('membershipType', membershipType.membershipType.toString());
+			localStorage.setItem('membershipId', membershipType.membershipId);
+		}
+	}
+	return user;
 }

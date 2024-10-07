@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { fetchUser } from '$lib/utils/auth';
 	import { bngBaseUrl } from '$lib/utils/helpers';
 	import type { UserData } from '$lib/utils/types';
 	import { Button } from '$lib/components/ui/button';
-	import { ensureValidToken } from '$lib/utils/auth';
 	import LoaderCircle from 'lucide-svelte/icons/loader-circle';
 	import { Avatar, AvatarImage, AvatarFallback } from '$lib/components/ui/avatar';
 
@@ -26,17 +26,12 @@
 		isLoading = false;
 	}
 
-	async function fetchUser() {
+	onMount(async () => {
 		isLoading = true;
-		await ensureValidToken();
-		const response = await fetch('/api/auth/user');
-		if (response.ok) {
-			user = await response.json();
-		}
+		user = await fetchUser();
 		isLoading = false;
-	}
-
-	onMount(fetchUser);
+	});
+	$inspect(user);
 </script>
 
 <div class="flex items-center space-x-4">

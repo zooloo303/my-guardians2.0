@@ -38,13 +38,22 @@ export interface BungieNetUser {
 	displayName: string;
 	profilePicturePath: string;
 }
+export interface DestinyMembership {
+	LastSeenDisplayName: string;
+	LastSeenDisplayNameType: number;
+	applicableMembershipTypes: number[];
+	bungieGlobalDisplayName: string;
+	bungieGlobalDisplayNameCode: number;
+	crossSaveOverride: number;
+	displayName: string;
+	iconPath: string;
+	isPublic: boolean;
+	membershipId: string;
+	membershipType: number;
+}
 export interface UserData {
-	bungieNetUser: {
-		membershipId: string;
-		displayName: string;
-		profilePicturePath: string;
-	};
-	destinyMemberships: any[];
+	bungieNetUser: BungieNetUser;
+	destinyMemberships: DestinyMembership[];
 }
 
 // Character types
