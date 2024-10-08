@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { fetchUser } from '$lib/utils/auth';
 	import { bngBaseUrl } from '$lib/utils/helpers';
 	import type { UserData } from '$lib/utils/types';
 	import { Button } from '$lib/components/ui/button';
@@ -8,9 +7,11 @@
 	import { LogOut } from 'lucide-svelte/icons';
 	import { Avatar, AvatarImage, AvatarFallback } from '$lib/components/ui/avatar';
 
+	// Props
+	let { user } = $props<{ user: UserData }>();
+
 	// State
 	let isLoading = $state(true);
-	let user = $state<UserData | null>(null);
 	let avatarUrl = $derived(user?.bungieNetUser.profilePicturePath || '');
 	let avatarFallback = $derived(user?.bungieNetUser.displayName.slice(0, 2).toUpperCase());
 
@@ -32,18 +33,19 @@
 
 	onMount(async () => {
 		isLoading = true;
-		user = await fetchUser();
-		isLoading = false;
+		if (user) {
+			return (isLoading = false);
+		}
 	});
 </script>
 
 <div class="flex items-center space-x-4">
-	{#if isLoading}
+	<!-- {#if isLoading}
 		<Button disabled>
 			<LoaderCircle class="mr-2 h-4 w-4 animate-spin" />
 			Loading...
-		</Button>
-	{:else if user}
+		</Button> -->
+	{#if user}
 		<div class="flex items-center space-x-2">
 			<Avatar>
 				<AvatarImage src={`${bngBaseUrl}${avatarUrl}`} alt={user.bungieNetUser.displayName} />

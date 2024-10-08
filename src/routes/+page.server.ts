@@ -1,8 +1,8 @@
+import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ fetch }) => {
-	console.log('hello');
-	const res = await fetch('/api/d2/profile');
-	const profileData = await res.json();
-	return { profileData };
+export const load: PageServerLoad = async ({ locals }) => {
+	if (!locals.user) {
+		return redirect(302, '/login');
+	}
 };

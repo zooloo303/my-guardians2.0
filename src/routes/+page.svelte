@@ -7,7 +7,7 @@
 	let isLoading = $state(true);
 
 	$effect(() => {
-		if (data.user !== null || data.profileData !== undefined) {
+		if (data.user !== null && data.profileData !== undefined) {
 			isLoading = false;
 		}
 	});

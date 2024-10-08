@@ -3,7 +3,7 @@
 	import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '$lib/components/ui/card';
 </script>
 
-<div class="flex min-h-screen items-center justify-center bg-background">
+<div class="mt-20 flex items-center justify-center bg-background">
 	<Card>
 		<CardHeader>
 			<img src="/images/Bungie.svg" alt="Bungie Logo" class="mx-auto mb-4 w-32" />
