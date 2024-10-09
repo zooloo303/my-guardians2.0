@@ -3,21 +3,19 @@
 	import type { UserData, ProfileData } from '$lib/utils/types';
 	import MembershipCard from '$lib/components/MembershipCard.svelte';
 
-	let { data } = $props<{ data: { user: UserData | null; profileData: ProfileData } }>();
-	let isLoading = $state(true);
+	let { data } = $props<{ data: { user: UserData | null; profileData: ProfileData | null } }>();
+	let isLoading = $state(data.profileData === null && data.user !== null);
 
-	$effect(() => {
-		if (data.user !== null && data.profileData !== undefined) {
-			isLoading = false;
-		}
-	});
-	console.log(data);
+	console.log('data loaded in the homepage:', data);
 </script>
 
 {#if isLoading}
 	<Skeleton />
-{:else if data.user}
+{:else if data.user && data.profileData}
 	<MembershipCard user={data.user} />
+	<!-- Display additional profile data here -->
+{:else if data.user}
+	<p>Loading profile data...</p>
 {:else}
 	<p>No user data available. Please log in.</p>
 {/if}

@@ -1,8 +1,12 @@
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ fetch, locals }) => {
-	console.log('hello');
-	const res = await fetch('/api/d2/profile');
-	const profileData = await res.json();
+	let profileData = null;
+	if (locals.user) {
+		const profileResponse = await fetch('/api/d2/profile');
+		if (profileResponse.ok) {
+			profileData = await profileResponse.json();
+		}
+	}
 	return { profileData, user: locals.user };
 };

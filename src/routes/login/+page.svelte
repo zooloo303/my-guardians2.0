@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import Auth from '$lib/components/Auth.svelte';
 	import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '$lib/components/ui/card';
 </script>
@@ -13,7 +14,7 @@
 			<p class="mb-4">
 				Please allow myGuardians to access your loot, we will not takes it, promise.
 			</p>
-			<Auth />
+			<Auth user={$page.data.user} />
 		</CardContent>
 		<CardFooter>
 			myGuardians is not affiliated with Bungie. Destiny is a registered trademark of Bungie.

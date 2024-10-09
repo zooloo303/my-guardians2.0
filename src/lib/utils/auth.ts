@@ -1,4 +1,27 @@
 import { goto } from '$app/navigation';
+import type { RequestEvent } from '@sveltejs/kit';
+
+export async function refreshTokenIfNeeded(event: RequestEvent) {
+	const accessToken = event.cookies.get('access_token');
+	const refreshToken = event.cookies.get('refresh_token');
+
+	if (!accessToken && refreshToken) {
+		const response = await event.fetch('/api/auth/refresh', {
+			method: 'POST'
+		});
+
+		if (response.ok) {
+			const data = await response.json();
+			if (data.success) {
+				console.log('Token refreshed successfully');
+			} else {
+				console.error('Failed to refresh token');
+			}
+		} else {
+			console.error('Error calling refresh token endpoint');
+		}
+	}
+}
 
 async function refreshToken() {
 	const TIMEOUT_MS = 10000; // 10 seconds
