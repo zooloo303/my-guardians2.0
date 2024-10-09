@@ -13,7 +13,6 @@
 	<Skeleton />
 {:else if data.user && data.profileData}
 	<MembershipCard user={data.user} />
-	<!-- Display additional profile data here -->
 {:else if data.user}
 	<p>Loading profile data...</p>
 {:else}

@@ -9,7 +9,7 @@
 	onMount(async () => {
 		try {
 			const storedVersion = await getManifestVersion();
-			const response = await fetch('/api/manifest');
+			const response = await fetch('/api/d2/manifest');
 
 			if (response.ok) {
 				const { version, tables } = await response.json();
