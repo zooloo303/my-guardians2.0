@@ -1,3 +1,4 @@
+import { bngBaseUrl } from '$lib/utils/helpers';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { BUNGIE_CLIENT_ID, BUNGIE_CLIENT_SECRET } from '$env/static/private';
@@ -10,7 +11,7 @@ export const POST: RequestHandler = async ({ fetch, cookies, request }) => {
 	}
 
 	try {
-		const tokenResponse = await fetch('https://www.bungie.net/platform/app/oauth/token/', {
+		const tokenResponse = await fetch(`${bngBaseUrl}/platform/app/oauth/token/`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
@@ -33,14 +34,12 @@ export const POST: RequestHandler = async ({ fetch, cookies, request }) => {
 			path: '/',
 			httpOnly: true,
 			secure: true,
-			sameSite: 'strict',
 			maxAge: tokenData.expires_in
 		});
 		cookies.set('refresh_token', tokenData.refresh_token, {
 			path: '/',
 			httpOnly: true,
 			secure: true,
-			sameSite: 'strict',
 			maxAge: tokenData.refresh_expires_in
 		});
 

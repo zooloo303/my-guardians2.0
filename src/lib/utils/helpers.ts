@@ -9,6 +9,7 @@ export const membershipTypes: Record<MembershipType, string> = {
 	[MembershipType.Stadia]: 'Stadia'
 };
 export const bngBaseUrl = 'https://www.bungie.net';
+
 export const manifestTables = [
 	'DestinyClassDefinition',
 	'DestinyDamageTypeDefinition',
@@ -21,8 +22,6 @@ export const manifestTables = [
 	'DestinyLoadoutNameDefinition',
 	'DestinyStatDefinition'
 ];
-
-
 // Inventory Item Helper Functions
 export function getUniqueInventoryItems(profileData: ProfileData): InventoryItem[] {
   const uniqueItems: InventoryItem[] = [];

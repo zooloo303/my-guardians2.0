@@ -1,5 +1,6 @@
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import { bngBaseUrl } from '$lib/utils/helpers';
 import { BUNGIE_API_KEY } from '$env/static/private';
 
 export const GET: RequestHandler = async ({ fetch, cookies }) => {
@@ -10,7 +11,7 @@ export const GET: RequestHandler = async ({ fetch, cookies }) => {
 	}
 
 	const response = await fetch(
-		'https://www.bungie.net/Platform/User/GetMembershipsForCurrentUser/',
+		`${bngBaseUrl}/Platform/User/GetMembershipsForCurrentUser/`,
 		{
 			headers: {
 				Authorization: `Bearer ${accessToken}`,
