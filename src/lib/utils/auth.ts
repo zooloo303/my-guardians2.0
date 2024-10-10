@@ -6,19 +6,43 @@ export async function refreshTokenIfNeeded(event: RequestEvent) {
 	const refreshToken = event.cookies.get('refresh_token');
 
 	if (!accessToken && refreshToken) {
-		const response = await event.fetch('/api/auth/refresh', {
-			method: 'POST'
-		});
+		try {
+			const response = await event.fetch('/api/auth/refresh', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ refreshToken })
+			});
 
-		if (response.ok) {
-			const data = await response.json();
-			if (data.success) {
-				console.log('Token refreshed successfully');
+			if (response.ok) {
+				const data = await response.json();
+				if (data.success) {
+					console.log('Token refreshed successfully');
+					event.cookies.set('access_token', data.access_token, {
+						path: '/',
+						httpOnly: true,
+						secure: true,
+						sameSite: 'strict',
+						maxAge: data.expires_in
+					});
+				} else {
+					console.error('Failed to refresh token');
+					// Clear cookies if refresh failed
+					event.cookies.delete('access_token', { path: '/' });
+					event.cookies.delete('refresh_token', { path: '/' });
+				}
 			} else {
-				console.error('Failed to refresh token');
+				console.error('Error calling refresh token endpoint');
+				// Clear cookies if refresh failed
+				event.cookies.delete('access_token', { path: '/' });
+				event.cookies.delete('refresh_token', { path: '/' });
 			}
-		} else {
-			console.error('Error calling refresh token endpoint');
+		} catch (error) {
+			console.error('Error during token refresh:', error);
+			// Clear cookies if refresh failed
+			event.cookies.delete('access_token', { path: '/' });
+			event.cookies.delete('refresh_token', { path: '/' });
 		}
 	}
 }
