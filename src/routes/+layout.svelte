@@ -4,6 +4,7 @@
 	import { ModeWatcher } from 'mode-watcher';
 	import Header from '$lib/components/Header.svelte';
 	import { Toaster } from '$lib/components/ui/sonner';
+	import type { UserData, ProfileData } from '$lib/utils/types';
 	import { storeManifestData, getManifestVersion } from '$lib/utils/indexedDB';
 
 	onMount(async () => {
@@ -28,10 +29,13 @@
 		}
 	});
 
-	let { children } = $props();
+	let { data, children } = $props<{
+		data: { user: UserData | null; profileData: ProfileData | null };
+	}>();
+	let user = $state(data.user);
 </script>
 
 <ModeWatcher />
-<Header />
+<Header {user} />
 <Toaster />
 {@render children()}

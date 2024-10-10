@@ -4,9 +4,8 @@
 	import MembershipCard from '$lib/components/MembershipCard.svelte';
 
 	let { data } = $props<{ data: { user: UserData | null; profileData: ProfileData | null } }>();
-	let isLoading = $state(data.profileData === null && data.user !== null);
 
-	console.log('data loaded in the homepage:', data);
+	let isLoading = $state(data.profileData === null && data.user !== null);
 </script>
 
 {#if isLoading}

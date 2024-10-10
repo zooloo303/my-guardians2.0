@@ -6,4 +6,4 @@ export const handle: Handle = async ({ event, resolve }) => {
 	await refreshTokenIfNeeded(event);
 	event.locals.user = await fetchUserServer(event.fetch, event.cookies);
 	return resolve(event);
-  };
+};

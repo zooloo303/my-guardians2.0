@@ -29,24 +29,24 @@ export const GET: RequestHandler = async ({ url, fetch, cookies }) => {
 
 	const tokenData = await tokenResponse.json();
 
-	// Store the tokens securely (you may want to encrypt these)
+	// Store tokens
 	cookies.set('access_token', tokenData.access_token, {
 		path: '/',
 		httpOnly: true,
 		secure: true,
-		sameSite: 'strict',
+		// sameSite: 'strict',
 		maxAge: tokenData.expires_in
 	});
 	cookies.set('refresh_token', tokenData.refresh_token, {
 		path: '/',
 		httpOnly: true,
 		secure: true,
-		sameSite: 'strict',
+		// sameSite: 'strict',
 		maxAge: tokenData.refresh_expires_in
 	});
 
-	// Redirect to the home page or a dashboard
-	return redirect(302, '/');
+	// Goto home page
+	redirect(302, '/');
 };
 
 export const POST: RequestHandler = async ({ cookies }) => {

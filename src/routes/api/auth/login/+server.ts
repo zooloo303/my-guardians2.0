@@ -7,5 +7,5 @@ export const GET: RequestHandler = async () => {
 	const state = Math.random().toString(36).substring(7);
 	const authUrl = `https://www.bungie.net/en/oauth/authorize?client_id=${encodeURIComponent(clientId)}&response_type=code&state=${encodeURIComponent(state)}`;
 
-	return redirect(307, authUrl);
+	redirect(307, authUrl);
 };

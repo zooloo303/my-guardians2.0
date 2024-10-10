@@ -9,22 +9,22 @@
 
 	// Props
 	let { user } = $props<{ user: UserData | null }>();
-	console.log('user in auth component :', user);
 
 	// State
 	let isLoading = $state(true);
-	let avatarUrl = $derived(user?.bungieNetUser.profilePicturePath || '');
-	let avatarFallback = $derived(user?.bungieNetUser.displayName.slice(0, 2).toUpperCase());
+	let guardian = $state(user);
+	let avatarUrl = $derived(guardian?.bungieNetUser.profilePicturePath || '');
+	let avatarFallback = $derived(guardian?.bungieNetUser.displayName.slice(0, 2).toUpperCase());
 
 	function login() {
-		window.location.href = '/api/auth/login';
+		goto('/api/auth/login');
 	}
 
 	async function logout() {
 		isLoading = true;
 		const response = await fetch('/api/auth/logout', { method: 'POST' });
 		if (response.ok) {
-			user = null;
+			guardian = null;
 			goto('/login');
 		} else {
 			console.error('Logout failed');
@@ -43,13 +43,13 @@
 			<LoaderCircle class="mr-2 h-4 w-4 animate-spin" />
 			Loading...
 		</Button>
-	{:else if user}
+	{:else if guardian}
 		<div class="flex items-center space-x-2">
 			<Avatar>
-				<AvatarImage src={`${bngBaseUrl}${avatarUrl}`} alt={user.bungieNetUser.displayName} />
+				<AvatarImage src={`${bngBaseUrl}${avatarUrl}`} alt={guardian.bungieNetUser.displayName} />
 				<AvatarFallback>{avatarFallback}</AvatarFallback>
 			</Avatar>
-			<span class="text-sm font-medium">{user.bungieNetUser.displayName}</span>
+			<span class="text-sm font-medium">{guardian.bungieNetUser.displayName}</span>
 		</div>
 		<Button variant="outline" onclick={logout}><LogOut />Log out</Button>
 	{:else}
