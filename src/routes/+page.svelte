@@ -4,15 +4,10 @@
 	import MembershipCard from '$lib/components/MembershipCard.svelte';
 	import Item from '$lib/components/Item.svelte';
 	import { getUniqueInventoryItems } from '$lib/utils/helpers';
-
+	//props
 	let { data } = $props<{ data: { user: UserData | null; profileData: ProfileData | null } }>();
+	//state
 	let isLoading = $state(data.profileData === null && data.user !== null);
-
-	$effect(() => {
-		if (data.profileData) {
-			console.log('Unique items:', getUniqueInventoryItems(data.profileData));
-		}
-	});
 </script>
 
 {#if isLoading}

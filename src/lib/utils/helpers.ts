@@ -29,17 +29,14 @@ export function getUniqueInventoryItems(profileData: ProfileData): InventoryItem
 
   // Add items from profileInventory
   uniqueItems.push(...profileData.inventoryData.profileInventory.items.filter(item => item.itemInstanceId));
-
   // Add items from characterInventories
   Object.values(profileData.inventoryData.characterInventories).forEach(inventory => {
     uniqueItems.push(...inventory.items.filter(item => item.itemInstanceId));
   });
-
   // Add items from characterEquipment
   Object.values(profileData.inventoryData.characterEquipment).forEach(equipment => {
     uniqueItems.push(...equipment.items.filter(item => item.itemInstanceId));
   });
-
   // Remove duplicates based on itemInstanceId
   return Array.from(new Map(uniqueItems.map(item => [item.itemInstanceId, item])).values());
 }

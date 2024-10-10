@@ -1,13 +1,13 @@
 <script lang="ts">
+    import { bngBaseUrl } from '$lib/utils/helpers';
+    import { getManifestData } from '$lib/utils/indexedDB';
 	import { Card, CardContent } from '$lib/components/ui/card';
-	import { getManifestData } from '$lib/utils/indexedDB';
 	import type { InventoryItem, DestinyInventoryItemDefinition } from '$lib/utils/types';
-	import { bngBaseUrl } from '$lib/utils/helpers';
-
+    //props
 	let { item } = $props<{ item: InventoryItem }>();
-
+    //state
 	let itemDefinition = $state<DestinyInventoryItemDefinition | undefined>(undefined);
-
+        
 	$effect(() => {
 		async function fetchItemDefinition() {
 			itemDefinition = await getManifestData<DestinyInventoryItemDefinition>('DestinyInventoryItemDefinition', item.itemHash);
