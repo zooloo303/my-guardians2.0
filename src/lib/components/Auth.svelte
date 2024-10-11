@@ -12,12 +12,15 @@
 
 	// State
 	let isLoading = $state(true);
+	let isLoggingIn = $state(false);
 	let guardian = $state(user);
 	let avatarUrl = $derived(guardian?.bungieNetUser.profilePicturePath || '');
 	let avatarFallback = $derived(guardian?.bungieNetUser.displayName.slice(0, 2).toUpperCase());
 
-	function login() {
-		goto('/api/auth/login');
+	async function login() {
+		isLoggingIn = true;
+		await goto('/api/auth/login');
+		isLoggingIn = false;
 	}
 
 	async function logout() {
@@ -52,6 +55,11 @@
 			<span class="text-sm font-medium">{guardian.bungieNetUser.displayName}</span>
 		</div>
 		<Button variant="outline" onclick={logout}><LogOut />Log out</Button>
+	{:else if isLoggingIn}
+		<Button disabled>
+			<LoaderCircle class="mr-2 h-4 w-4 animate-spin" />
+			Logging in...
+		</Button>
 	{:else}
 		<Button onclick={login}>Authenticate with Bungie</Button>
 	{/if}

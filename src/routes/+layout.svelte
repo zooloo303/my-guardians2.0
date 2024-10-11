@@ -4,8 +4,12 @@
 	import { ModeWatcher } from 'mode-watcher';
 	import Header from '$lib/components/Header.svelte';
 	import { Toaster } from '$lib/components/ui/sonner';
+	import { Progress } from '$lib/components/ui/progress';
 	import type { UserData, ProfileData } from '$lib/utils/types';
 	import { storeManifestData, getManifestVersion } from '$lib/utils/indexedDB';
+
+	let isUpdatingManifest = $state(false);
+	let progress = $state(0);
 
 	onMount(async () => {
 		try {
@@ -16,6 +20,13 @@
 				const { version, tables } = await response.json();
 
 				if (version !== storedVersion) {
+					isUpdatingManifest = true;
+					// Simulating progress for demonstration
+					for (let i = 0; i <= 100; i += 10) {
+						progress = i;
+						await new Promise((resolve) => setTimeout(resolve, 200));
+					}
+
 					await storeManifestData({ version, tables });
 					console.log('New manifest data stored successfully');
 				} else {
@@ -26,6 +37,9 @@
 			}
 		} catch (error) {
 			console.error('Error handling manifest data:', error);
+		} finally {
+			isUpdatingManifest = false;
+			progress = 0;
 		}
 	});
 
@@ -38,4 +52,14 @@
 <ModeWatcher />
 <Header {user} />
 <Toaster />
+
+{#if isUpdatingManifest}
+	<div class="fixed bottom-0 left-0 right-0 z-50 bg-background/80 p-4 backdrop-blur-sm">
+		<div class="mx-auto max-w-md">
+			<p class="mb-2 text-sm font-medium">Updating Manifest: {progress}%</p>
+			<Progress value={progress} max={100} />
+		</div>
+	</div>
+{/if}
+
 {@render children()}
