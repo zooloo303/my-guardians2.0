@@ -9,22 +9,23 @@
 	} from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
+	import { Separator } from '$lib/components/ui/separator';
 	import { bngBaseUrl, membershipTypes } from '$lib/utils/helpers';
 	import type { UserData, MembershipType } from '$lib/utils/types';
 	import { Avatar, AvatarImage, AvatarFallback } from '$lib/components/ui/avatar';
-	import { Separator } from '$lib/components/ui/separator';
-
+	
 	let { user } = $props<{ user: UserData }>();
 
 	const primaryMembership = user.destinyMemberships[0];
+	const membershipId = primaryMembership.membershipId;
 	const userName = primaryMembership.bungieGlobalDisplayName;
 	const displayName: string = primaryMembership.displayName;
 	const profilePicture = user.bungieNetUser.profilePicturePath;
 	const iconPath = primaryMembership.iconPath;
 	const membershipTypeNumber: MembershipType = primaryMembership.membershipType;
 	const membershipTypeText = membershipTypes[membershipTypeNumber] ?? 'Unknown';
-
 	const additionalMemberships = user.destinyMemberships.slice(1);
+	const bungieDotNetProfileURL = `${bngBaseUrl}/7/en/User/Profile/${membershipTypeNumber}/${membershipId}?bgn=${userName}`;
 </script>
 
 <Card class="w-full max-w-md">
@@ -76,6 +77,7 @@
 		</div>
 	</CardContent>
 	<CardFooter>
-		<Button variant="outline" class="w-full">View Full Profile</Button>
+		<Button variant="outline" class="w-full" href={bungieDotNetProfileURL}>View Full Profile</Button
+		>
 	</CardFooter>
 </Card>
