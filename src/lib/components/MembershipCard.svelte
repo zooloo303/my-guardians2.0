@@ -1,6 +1,5 @@
 <script lang="ts">
 	import {
-		Card,
 		CardHeader,
 		CardTitle,
 		CardDescription,
@@ -28,7 +27,7 @@
 	const bungieDotNetProfileURL = `${bngBaseUrl}/7/en/User/Profile/${membershipTypeNumber}/${membershipId}?bgn=${userName}`;
 </script>
 
-<Card class="w-full max-w-md">
+<div class="w-full">
 	<CardHeader>
 		<div class="flex items-center space-x-4">
 			<Avatar class="h-16 w-16">
@@ -77,7 +76,6 @@
 		</div>
 	</CardContent>
 	<CardFooter>
-		<Button variant="outline" class="w-full" href={bungieDotNetProfileURL}>View Full Profile</Button
-		>
+		<Button variant="outline" class="w-full" href={bungieDotNetProfileURL}>View Full Profile</Button>
 	</CardFooter>
-</Card>
+</div>
