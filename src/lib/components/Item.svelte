@@ -51,7 +51,7 @@
                 alt={itemData.itemDefinition.displayProperties.name} 
                 class="w-12 h-12 mb-1"
             />
-            <h3 class="text-xs font-semibold text-center">{itemData.itemDefinition.displayProperties.name}</h3>
+            <h3 class="text-xs font-semibold text-center break-words w-full">{itemData.itemDefinition.displayProperties.name}</h3>
             <div class="text-xs flex items-center mt-2">
                 {#if itemData.damageTypeDefinition}
                     <img 
