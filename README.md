@@ -23,6 +23,5 @@ npm run dev -- --open
 ```
 
 ## Todos:
-- add a blocker of some sort to the app for first time users in order to get the manifest loaded
-- add a progress bar for loading the manifest
-- add a progress bar for loading the user data
+- item hover-card
+- build a search panel to filter items
