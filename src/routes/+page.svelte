@@ -2,8 +2,9 @@
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import type { UserData, ProfileData } from '$lib/utils/types';
 	import ItemList from '$lib/components/ItemList.svelte';
-
+	//props
 	let { data } = $props<{ data: { user: UserData | null; profileData: ProfileData | null } }>();
+	//state
 	let isLoading = $state(data.profileData === null && data.user !== null);
 </script>
 

@@ -1,5 +1,5 @@
 import  { MembershipType } from '$lib/utils/types';
-import type { ProfileData, InventoryItem } from './types';
+import type { ProfileData, InventoryItem, InventoryItemWithComponents } from './types';
 
 export const membershipTypes: Record<MembershipType, string> = {
 	[MembershipType.Xbox]: 'Xbox',
@@ -23,7 +23,7 @@ export const manifestTables = [
 	'DestinyStatDefinition'
 ];
 // Inventory Item Helper Functions
-export function getUniqueInventoryItems(profileData: ProfileData): InventoryItem[] {
+export function getUniqueInventoryItems(profileData: ProfileData): InventoryItemWithComponents[] {
   const uniqueItems: InventoryItem[] = [];
 
   // Add items from profileInventory
@@ -37,5 +37,12 @@ export function getUniqueInventoryItems(profileData: ProfileData): InventoryItem
     uniqueItems.push(...equipment.items.filter(item => item.itemInstanceId));
   });
   // Remove duplicates based on itemInstanceId
-  return Array.from(new Map(uniqueItems.map(item => [item.itemInstanceId, item])).values());
+  const itemMap = new Map(uniqueItems.map(item => [item.itemInstanceId, item]));
+  const uniqueItemsWithComponents = Array.from(itemMap.values()).map(item => ({
+    ...item,
+    instance: profileData.inventoryData.itemComponents.instances.data[item.itemInstanceId],
+    stats: profileData.inventoryData.itemComponents.stats.data[item.itemInstanceId]?.stats,
+    displayItemHash: item.overrideStyleItemHash || item.itemHash
+  }));
+  return uniqueItemsWithComponents;
 }
