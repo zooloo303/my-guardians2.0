@@ -83,7 +83,7 @@
 		{#if itemData.itemDefinition}
 			{#if itemData.itemDefinition.screenshot}
 				<div
-					class="absolute inset-0 bg-cover bg-center opacity-20"
+					class="absolute inset-0 bg-cover bg-center opacity-70"
 					style="background-image: url('{bngBaseUrl}{itemData.itemDefinition.screenshot}'); background-size: contain; background-repeat: no-repeat;"
 				></div>
 			{/if}
