@@ -120,12 +120,20 @@ export interface InventoryItem {
 export interface ItemComponents {
 	instances: { data: { [itemInstanceId: string]: ItemInstance } };
 	stats: { data: { [itemInstanceId: string]: { stats: ItemStats } } };
-	sockets: { data: { [itemInstanceId: string]: { sockets: ItemSockets } } };
+	sockets: { data: { [itemInstanceId: string]: ItemSockets } };
+}
+export interface ItemSockets {
+	sockets: ItemSocket[];
+}
+export interface ItemSocket {
+	plugHash: number;
+	isEnabled: boolean;
+	isVisible: boolean;
 }
 export interface InventoryItemWithComponents extends InventoryItem {
 	instance?: ItemInstance;
 	stats?: ItemStats;
-	sockets?: { sockets: ItemSocket[] };
+	sockets?: ItemSockets;
 }
 export interface CompleteInventoryResponse {
 	profileInventory: {
@@ -167,14 +175,6 @@ export interface ItemStat {
 }
 export interface ItemStats {
 	[statHash: string]: ItemStat;
-}
-export interface ItemSocket {
-	plugHash: number;
-	isEnabled: boolean;
-	isVisible: boolean;
-}
-export interface ItemSockets {
-	[plugHash: string]: ItemSocket;
 }
 export interface DestinyItemTransferRequest {
 	itemReferenceHash: number;

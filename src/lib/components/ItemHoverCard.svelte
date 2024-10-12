@@ -24,17 +24,16 @@
 		itemDefinition: DestinyInventoryItemDefinition | null;
 		damageTypeDefinition: DestinyDamageTypeDefinition | null;
 		statDefinitions: Record<string, DestinyStatDefinition>;
-	}>({ itemDefinition: null, damageTypeDefinition: null, statDefinitions: {} });
-
-	let socketDefinitions = $state<Record<string, DestinyInventoryItemDefinition>>({});
+		socketDefinitions: Record<number, DestinyInventoryItemDefinition>;
+	}>({ itemDefinition: null, damageTypeDefinition: null, statDefinitions: {}, socketDefinitions: {} });
 
 	$effect(() => {
 		async function fetchData() {
 			const [itemDef, damageDef] = await Promise.all([
 				getManifestData<DestinyInventoryItemDefinition>(
-					'DestinyInventoryItemDefinition',
-					item.displayItemHash
-				),
+						'DestinyInventoryItemDefinition',
+						item.itemHash
+					),
 				item.instance?.damageTypeHash
 					? getManifestData<DestinyDamageTypeDefinition>(
 							'DestinyDamageTypeDefinition',
@@ -53,14 +52,13 @@
 				}
 			}
 
-			// Fetch socket definitions
-			const socketDefs: Record<string, DestinyInventoryItemDefinition> = {};
-			if (itemDef && itemDef.sockets && itemDef.sockets.socketEntries) {
-				for (const socket of itemDef.sockets.socketEntries) {
-					if (socket.singleInitialItemHash) {
-						socketDefs[socket.singleInitialItemHash] = await getManifestData<DestinyInventoryItemDefinition>(
+			const socketDefs: Record<number, DestinyInventoryItemDefinition> = {};
+			if (item.sockets?.sockets) {
+				for (const socket of item.sockets.sockets) {
+					if (socket.plugHash) {
+						socketDefs[socket.plugHash] = await getManifestData<DestinyInventoryItemDefinition>(
 							'DestinyInventoryItemDefinition',
-							socket.singleInitialItemHash
+							socket.plugHash
 						);
 					}
 				}
@@ -69,65 +67,72 @@
 			itemData = {
 				itemDefinition: itemDef || null,
 				damageTypeDefinition: damageDef,
-				statDefinitions: statDefs
+				statDefinitions: statDefs,
+				socketDefinitions: socketDefs
 			};
-			socketDefinitions = socketDefs;
 		}
 		fetchData();
 	});
 </script>
 
-	<HoverCard>
+<HoverCard>
 	<HoverCardTrigger>
 		{@render children()}
 	</HoverCardTrigger>
-		<HoverCardContent class="w-80">
+	<HoverCardContent class="w-96 relative">
 		{#if itemData.itemDefinition}
-			<div class="flex flex-col space-y-2">
-				<h3 class="text-lg font-semibold">{itemData.itemDefinition.displayProperties.name}</h3>
+			{#if itemData.itemDefinition.screenshot}
+				<div
+					class="absolute inset-0 bg-cover bg-center opacity-20"
+					style="background-image: url('{bngBaseUrl}{itemData.itemDefinition.screenshot}'); background-size: contain; background-repeat: no-repeat;"
+				></div>
+			{/if}
+			<div class="relative z-10 flex flex-col space-y-3 p-4">
+				<div class="flex items-center space-x-2">
+					<h3 class="text-lg font-semibold">{itemData.itemDefinition.displayProperties.name}</h3>
+					{#if itemData.damageTypeDefinition}
+						<img
+							src={`${bngBaseUrl}${itemData.damageTypeDefinition.displayProperties.icon}`}
+							alt={itemData.damageTypeDefinition.displayProperties.name}
+							class="h-6 w-6"
+						/>
+					{/if}
+				</div>
 				<p class="text-sm text-muted-foreground">{itemData.itemDefinition.itemTypeDisplayName}</p>
-				<p class="text-sm">Power Level: {item.instance?.primaryStat?.value || 'N/A'}</p>
+				<p class="text-sm font-medium">Power Level: {item.instance?.primaryStat?.value || 'N/A'}</p>
 
-				{#if itemData.itemDefinition.screenshot}
-					<img
-						src={`${bngBaseUrl}${itemData.itemDefinition.screenshot}`}
-						alt="Item Screenshot"
-						class="rounded-md"
-					/>
-				{/if}
-
-				{#if item.stats}
-					<div class="space-y-1">
-						{#each Object.entries(item.stats) as [statHash, stat]}
-							{#if itemData.statDefinitions[statHash]}
-								<div class="flex items-center">
-									<span class="w-24 text-sm"
-										>{itemData.statDefinitions[statHash].displayProperties.name}</span
-									>
-									<Progress value={stat.value} max={100} class="flex-grow" />
-									<span class="ml-2 text-sm">{stat.value}</span>
-								</div>
+				{#if item.sockets?.sockets}
+					<div class="flex flex-wrap gap-2">
+						{#each item.sockets.sockets.filter(socket => socket.isEnabled && socket.isVisible) as socket}
+							{#if itemData.socketDefinitions[socket.plugHash]}
+								<Tooltip>
+									<TooltipTrigger>
+										<img
+											src={`${bngBaseUrl}${itemData.socketDefinitions[socket.plugHash].displayProperties.icon}`}
+											alt={itemData.socketDefinitions[socket.plugHash].displayProperties.name}
+											class="h-8 w-8"
+										/>
+									</TooltipTrigger>
+									<TooltipContent>
+										<p>{itemData.socketDefinitions[socket.plugHash].displayProperties.name}</p>
+									</TooltipContent>
+								</Tooltip>
 							{/if}
 						{/each}
 					</div>
 				{/if}
 
-				{#if itemData.itemDefinition.sockets?.socketEntries}
-					<div class="flex space-x-2">
-						{#each itemData.itemDefinition.sockets.socketEntries as socket}
-							{#if socket.singleInitialItemHash && socketDefinitions[socket.singleInitialItemHash]}
-								<Tooltip>
-									<TooltipTrigger>
-										<img
-											src={`${bngBaseUrl}${socketDefinitions[socket.singleInitialItemHash].displayProperties.icon}`}
-											alt={socketDefinitions[socket.singleInitialItemHash].displayProperties.name}
-											class="h-6 w-6"
-										/>
-									</TooltipTrigger>
-									<TooltipContent>
-										<p>{socketDefinitions[socket.singleInitialItemHash].displayProperties.name}</p>
-									</TooltipContent>
-								</Tooltip>
+				{#if item.stats}
+					<div class="space-y-2">
+						{#each Object.entries(item.stats) as [statHash, stat]}
+							{#if itemData.statDefinitions[statHash]}
+								<div class="flex items-center">
+									<span class="w-28 text-sm font-medium"
+										>{itemData.statDefinitions[statHash].displayProperties.name}</span
+									>
+									<Progress value={stat.value} max={100} class="flex-grow" />
+									<span class="ml-2 text-sm">{stat.value}</span>
+								</div>
 							{/if}
 						{/each}
 					</div>

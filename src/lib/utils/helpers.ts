@@ -42,6 +42,7 @@ export function getUniqueInventoryItems(profileData: ProfileData): InventoryItem
     ...item,
     instance: profileData.inventoryData.itemComponents.instances.data[item.itemInstanceId],
     stats: profileData.inventoryData.itemComponents.stats.data[item.itemInstanceId]?.stats,
+    sockets: profileData.inventoryData.itemComponents.sockets.data[item.itemInstanceId],
     displayItemHash: item.overrideStyleItemHash || item.itemHash
   }));
   return uniqueItemsWithComponents;
