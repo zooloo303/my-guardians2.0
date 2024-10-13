@@ -98,9 +98,53 @@ export interface Character {
 
 // Item types
 export enum DestinyItemType {
-	Subclass = 16,
+	None = 0,
+	Currency = 1,
+	Armor = 2,
 	Weapon = 3,
-	Armor = 2
+	Message = 7,
+	Engram = 8,
+	Consumable = 9,
+	ExchangeMaterial = 10,
+	MissionReward = 11,
+	QuestStep = 12,
+	QuestStepComplete = 13,
+	Emblem = 14,
+	Quest = 15,
+	Subclass = 16,
+	ClanBanner = 17,
+	Aura = 18,
+	Mod = 19,
+	Dummy = 20,
+	Ship = 21,
+	Vehicle = 22,
+	Emote = 23,
+	Ghost = 24,
+	Package = 25,
+	Bounty = 26,
+	Wrapper = 27,
+	SeasonalArtifact = 28,
+	Finisher = 29,
+	Pattern = 30
+}
+export enum DamageType {
+	None = 0,
+	Kinetic = 1,
+	Arc = 2,
+	Thermal = 3,
+	Void = 4,
+	Raid = 5,
+	Stasis = 6,
+	Strand = 7
+}
+export enum TierType {
+	Unknown = 0,
+	Currency = 1,
+	Basic = 2,
+	Common = 3,
+	Rare = 4,
+	Superior = 5,
+	Exotic = 6
 }
 export interface InventoryItem {
 	itemHash: number;
@@ -281,6 +325,7 @@ export interface DestinyInventoryItemDefinition {
 	inventory?: {
 		bucketTypeHash: number;
 		tierType: number;
+		tierTypeName: string;
 	};
 	itemCategoryHashes: number[];
 	defaultDamageTypeHash?: number;
@@ -296,6 +341,20 @@ export interface DestinyInventoryItemDefinition {
 	hasDisplayableStats: boolean;
 	primaryBaseStatHash: number;
 }
+export interface DestinyInventoryBucketDefinition {
+	hash: number;
+	displayProperties: {
+		name: string;
+		icon: string;
+		description: string;
+	};
+	scope: number;
+	category: number;
+	bucketOrder: number;
+	location: number;
+	enabled: boolean;
+}
+
 export interface DestinyDamageTypeDefinition {
 	displayProperties: {
 		name: string;
