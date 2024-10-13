@@ -3,8 +3,8 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Button } from '$lib/components/ui/button';
 	import * as Select from '$lib/components/ui/select';
-	import { BUCKET_HASH, DamageType, TierType, BreakerType, DestinyItemType, DestinyItemSubType } from '$lib/utils/types';
 	import type { SearchCriteria } from '$lib/utils/types';
+	import { BUCKET_HASH, DamageType, TierType, BreakerType, DestinyItemType, DestinyItemSubType } from '$lib/utils/types';
 	
 	let { onSearch, 
 		  itemName = $bindable(''), 
@@ -26,15 +26,6 @@
 		}>();
 
 	function search() {
-		console.log('Search criteria:', {
-			itemName,
-			itemType,
-			itemSubType,
-			damageType,
-			bucketType,
-			tierType,
-			breakerType
-		});
 		onSearch({ itemName, itemType, itemSubType, damageType, bucketType, tierType, breakerType });
 	}
 
@@ -172,7 +163,7 @@
     </div>
 
     <div class="flex justify-end space-x-2">
-        <Button variant="outline" on:click={reset}>Reset</Button>
-        <Button on:click={search}>Search</Button>
+        <Button variant="outline" onclick={reset}>Reset</Button>
+        <Button onclick={search}>Search</Button>
     </div>
 </div>

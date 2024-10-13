@@ -16,6 +16,7 @@
 
 	// Search function
 	async function handleSearch(criteria: SearchCriteria) {
+		console.log('Search criteria:', criteria);
 		filteredItems = await Promise.all(items.map(async (item) => {
 			const itemDef = await getManifestData<DestinyInventoryItemDefinition>(
 				'DestinyInventoryItemDefinition',
@@ -24,12 +25,15 @@
 			if (!itemDef) return null;
 
 			const matchesName = !criteria.itemName || itemDef.displayProperties.name.toLowerCase().includes(criteria.itemName.toLowerCase());
-			const matchesItemType = !criteria.itemType || itemDef.itemType === criteria.itemType;
-			const matchesDamageType = !criteria.damageType || item.instance?.damageType === criteria.damageType;
-			const matchesBucketType = !criteria.bucketType || item.bucketHash === criteria.bucketType;
-			const matchesTierType = !criteria.tierType || itemDef.inventory?.tierType === criteria.tierType;
+			const matchesItemType = criteria.itemType === null || itemDef.itemType === criteria.itemType.value;
+			const matchesItemSubType = criteria.itemSubType === null || itemDef.itemSubType === criteria.itemSubType.value;
+			const matchesDamageType = criteria.damageType === null || item.instance?.damageType === criteria.damageType.value;
+			const matchesBucketType = criteria.bucketType === null || item.bucketHash === criteria.bucketType.value;
+			const matchesTierType = criteria.tierType === null || itemDef.inventory?.tierType === criteria.tierType.value;
+			const matchesBreakerType = criteria.breakerType === null || itemDef.breakerType === criteria.breakerType.value;
 
-			return matchesName && matchesItemType && matchesDamageType && matchesBucketType && matchesTierType ? item : null;
+			return matchesName && matchesItemType && matchesItemSubType && matchesDamageType && 
+				   matchesBucketType && matchesTierType && matchesBreakerType ? item : null;
 		}));
 		filteredItems = filteredItems.filter((item): item is InventoryItemWithComponents => item !== null);
 	}
