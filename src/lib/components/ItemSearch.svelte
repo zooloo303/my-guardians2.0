@@ -26,6 +26,15 @@
 		}>();
 
 	function search() {
+		console.log('Search criteria:', {
+			itemName,
+			itemType,
+			itemSubType,
+			damageType,
+			bucketType,
+			tierType,
+			breakerType
+		});
 		onSearch({ itemName, itemType, itemSubType, damageType, bucketType, tierType, breakerType });
 	}
 
@@ -44,13 +53,13 @@
 <div class="space-y-4">
     <div>
         <Label for="itemName">Item Name</Label>
-        <Input id="itemName" value={itemName} placeholder="Search items..." />
+        <Input id="itemName" bind:value={itemName} placeholder="Search items..." />
     </div>
 
     <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
         <div>
             <Label for="itemType">Item Type</Label>
-            <Select.Root>
+            <Select.Root bind:selected={itemType}>
                 <Select.Trigger class="w-full">
                     <Select.Value placeholder="Select item type" />
                 </Select.Trigger>
@@ -69,7 +78,7 @@
         </div>
         <div>
             <Label for="itemSubType">Item Subtype</Label>
-            <Select.Root>
+            <Select.Root bind:selected={itemSubType}>
                 <Select.Trigger class="w-full">
                     <Select.Value placeholder="Select item subtype" />
                 </Select.Trigger>
@@ -88,7 +97,7 @@
         </div>
         <div>
             <Label for="damageType">Damage Type</Label>
-            <Select.Root>
+            <Select.Root bind:selected={damageType}>
                 <Select.Trigger class="w-full">
                     <Select.Value placeholder="Select damage type" />
                 </Select.Trigger>
@@ -107,7 +116,7 @@
         </div>
         <div>
             <Label for="breakerType">Breaker Type</Label>
-            <Select.Root>
+            <Select.Root bind:selected={breakerType}>
                 <Select.Trigger class="w-full">
                     <Select.Value placeholder="Select breaker type" />
                 </Select.Trigger>
@@ -126,7 +135,7 @@
         </div>
         <div>
             <Label for="bucketType">Inventory Bucket</Label>
-            <Select.Root>
+            <Select.Root bind:selected={bucketType}>
                 <Select.Trigger class="w-full">
                     <Select.Value placeholder="Select bucket type" />
                 </Select.Trigger>
@@ -143,7 +152,7 @@
         </div>
         <div>
             <Label for="tierType">Tier Type</Label>
-            <Select.Root>
+            <Select.Root bind:selected={tierType}>
                 <Select.Trigger class="w-full">
                     <Select.Value placeholder="Select tier type" />
                 </Select.Trigger>

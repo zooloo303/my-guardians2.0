@@ -317,7 +317,9 @@ export interface DestinyStatDefinition {
 export interface SearchCriteria {
 	itemName: string;
 	itemType: DestinyItemType | null;
+	itemSubType: DestinyItemSubType | null;
 	damageType: DamageType | null;
+	breakerType: BreakerType | null;
 	bucketType: number | null;
 	tierType: TierType | null;
   }
