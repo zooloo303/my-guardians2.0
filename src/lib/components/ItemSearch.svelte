@@ -1,104 +1,169 @@
 <script lang="ts">
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
-	import { Select } from '$lib/components/ui/select';
 	import { Button } from '$lib/components/ui/button';
-	import { getManifestData } from '$lib/utils/indexedDB';
-	import type { DestinyInventoryBucketDefinition } from '$lib/utils/types';
-	import { DamageType, TierType, DestinyItemType } from '$lib/utils/types';
-
-	let { onSearch } = $props<{ onSearch: (criteria: SearchCriteria) => void }>();
-
-	let itemName = $state('');
-	let itemType = $state<DestinyItemType | null>(null);
-	let damageType = $state<DamageType | null>(null);
-	let bucketType = $state<number | null>(null);
-	let tierType = $state<TierType | null>(null);
-
-	let buckets = $state<DestinyInventoryBucketDefinition[]>([]);
-
-	$effect(() => {
-		loadBuckets();
-	});
-
-	async function loadBuckets() {
-		const allBuckets = await getManifestData<Record<string, DestinyInventoryBucketDefinition>>(
-			'DestinyInventoryBucketDefinition',
-			0
-		);
-		if (allBuckets) {
-			buckets = Object.values(allBuckets).filter((bucket) => bucket.enabled);
-		}
-	}
+	import * as Select from '$lib/components/ui/select';
+	import { BUCKET_HASH, DamageType, TierType, BreakerType, DestinyItemType, DestinyItemSubType } from '$lib/utils/types';
+	import type { SearchCriteria } from '$lib/utils/types';
+	
+	let { onSearch, 
+		  itemName = $bindable(''), 
+		  itemType = $bindable<DestinyItemType | null>(null),
+		  itemSubType = $bindable<DestinyItemSubType | null>(null),
+		  damageType = $bindable<DamageType | null>(null),
+		  breakerType = $bindable<BreakerType | null>(null),
+		  bucketType = $bindable<number | null>(null),
+		  tierType = $bindable<TierType | null>(null)
+		} = $props<{ 
+			onSearch: (criteria: SearchCriteria) => void, 
+			itemName: string, 
+			itemType: DestinyItemType | null, 
+			itemSubType: DestinyItemSubType | null,
+			damageType: DamageType | null,
+			breakerType: BreakerType | null,
+			bucketType: number | null,
+			tierType: TierType | null
+		}>();
 
 	function search() {
-		onSearch({ itemName, itemType, damageType, bucketType, tierType });
+		onSearch({ itemName, itemType, itemSubType, damageType, bucketType, tierType, breakerType });
 	}
 
 	function reset() {
 		itemName = '';
 		itemType = null;
+		itemSubType = null;
 		damageType = null;
 		bucketType = null;
 		tierType = null;
+		breakerType = null;
 	}
 </script>
 
+
 <div class="space-y-4">
-	<div class="flex space-x-2">
-		<div class="flex-grow">
-			<Label for="itemName">Item Name</Label>
-			<Input id="itemName" bind:value={itemName} placeholder="Search items..." />
-		</div>
-		<div>
-			<Label for="itemType">Item Type</Label>
-			<Select id="itemType" bind:value={itemType}>
-				<option value={null}>Any</option>
-				{#each Object.entries(DestinyItemType) as [key, value]}
-					{#if typeof value === 'number'}
-						<option {value}>{key}</option>
-					{/if}
-				{/each}
-			</Select>
-		</div>
-	</div>
+    <div>
+        <Label for="itemName">Item Name</Label>
+        <Input id="itemName" value={itemName} placeholder="Search items..." />
+    </div>
 
-	<div class="flex space-x-2">
-		<div>
-			<Label for="damageType">Damage Type</Label>
-			<Select id="damageType" bind:value={damageType}>
-				<option value={null}>Any</option>
-				{#each Object.entries(DamageType) as [key, value]}
-					{#if typeof value === 'number'}
-						<option {value}>{key}</option>
-					{/if}
-				{/each}
-			</Select>
-		</div>
-		<div>
-			<Label for="bucketType">Inventory Bucket</Label>
-			<Select id="bucketType" bind:value={bucketType}>
-				<option value={null}>Any</option>
-				{#each buckets as bucket}
-					<option value={bucket.hash}>{bucket.displayProperties.name}</option>
-				{/each}
-			</Select>
-		</div>
-		<div>
-			<Label for="tierType">Tier Type</Label>
-			<Select id="tierType" bind:value={tierType}>
-				<option value={null}>Any</option>
-				{#each Object.entries(TierType) as [key, value]}
-					{#if typeof value === 'number'}
-						<option {value}>{key}</option>
-					{/if}
-				{/each}
-			</Select>
-		</div>
-	</div>
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <div>
+            <Label for="itemType">Item Type</Label>
+            <Select.Root>
+                <Select.Trigger class="w-full">
+                    <Select.Value placeholder="Select item type" />
+                </Select.Trigger>
+                <Select.Content>
+                    <Select.Group>
+                        <Select.Label>Item Types</Select.Label>
+                        <Select.Item value={null}>Any</Select.Item>
+                        {#each Object.entries(DestinyItemType) as [key, value]}
+                            {#if typeof value === 'number'}
+                                <Select.Item {value}>{key}</Select.Item>
+                            {/if}
+                        {/each}
+                    </Select.Group>
+                </Select.Content>
+            </Select.Root>
+        </div>
+        <div>
+            <Label for="itemSubType">Item Subtype</Label>
+            <Select.Root>
+                <Select.Trigger class="w-full">
+                    <Select.Value placeholder="Select item subtype" />
+                </Select.Trigger>
+                <Select.Content>
+                    <Select.Group>
+                        <Select.Label>Item Subtypes</Select.Label>
+                        <Select.Item value={null}>Any</Select.Item>
+                        {#each Object.entries(DestinyItemSubType) as [key, value]}
+                            {#if typeof value === 'number'}
+                                <Select.Item {value}>{key}</Select.Item>
+                            {/if}
+                        {/each}
+                    </Select.Group>
+                </Select.Content>
+            </Select.Root>
+        </div>
+        <div>
+            <Label for="damageType">Damage Type</Label>
+            <Select.Root>
+                <Select.Trigger class="w-full">
+                    <Select.Value placeholder="Select damage type" />
+                </Select.Trigger>
+                <Select.Content>
+                    <Select.Group>
+                        <Select.Label>Damage Types</Select.Label>
+                        <Select.Item value={null}>Any</Select.Item>
+                        {#each Object.entries(DamageType) as [key, value]}
+                            {#if typeof value === 'number'}
+                                <Select.Item {value}>{key}</Select.Item>
+                            {/if}
+                        {/each}
+                    </Select.Group>
+                </Select.Content>
+            </Select.Root>
+        </div>
+        <div>
+            <Label for="breakerType">Breaker Type</Label>
+            <Select.Root>
+                <Select.Trigger class="w-full">
+                    <Select.Value placeholder="Select breaker type" />
+                </Select.Trigger>
+                <Select.Content>
+                    <Select.Group>
+                        <Select.Label>Breaker Types</Select.Label>
+                        <Select.Item value={null}>Any</Select.Item>
+                        {#each Object.entries(BreakerType) as [key, value]}
+                            {#if typeof value === 'number'}
+                                <Select.Item {value}>{key}</Select.Item>
+                            {/if}
+                        {/each}
+                    </Select.Group>
+                </Select.Content>
+            </Select.Root>
+        </div>
+        <div>
+            <Label for="bucketType">Inventory Bucket</Label>
+            <Select.Root>
+                <Select.Trigger class="w-full">
+                    <Select.Value placeholder="Select bucket type" />
+                </Select.Trigger>
+                <Select.Content>
+                    <Select.Group>
+                        <Select.Label>Bucket Types</Select.Label>
+                        <Select.Item value={null}>Any</Select.Item>
+                        {#each Object.entries(BUCKET_HASH) as [hash, name]}
+                            <Select.Item value={parseInt(hash)}>{name}</Select.Item>
+                        {/each}
+                    </Select.Group>
+                </Select.Content>
+            </Select.Root>
+        </div>
+        <div>
+            <Label for="tierType">Tier Type</Label>
+            <Select.Root>
+                <Select.Trigger class="w-full">
+                    <Select.Value placeholder="Select tier type" />
+                </Select.Trigger>
+                <Select.Content>
+                    <Select.Group>
+                        <Select.Label>Tier Types</Select.Label>
+                        <Select.Item value={null}>Any</Select.Item>
+                        {#each Object.entries(TierType) as [key, value]}
+                            {#if typeof value === 'number'}
+                                <Select.Item {value}>{key}</Select.Item>
+                            {/if}
+                        {/each}
+                    </Select.Group>
+                </Select.Content>
+            </Select.Root>
+        </div>
+    </div>
 
-	<div class="flex justify-end space-x-2">
-		<Button variant="outline" onclick={reset}>Reset</Button>
-		<Button onclick={search}>Search</Button>
-	</div>
+    <div class="flex justify-end space-x-2">
+        <Button variant="outline" on:click={reset}>Reset</Button>
+        <Button on:click={search}>Search</Button>
+    </div>
 </div>

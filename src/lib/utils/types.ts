@@ -55,13 +55,7 @@ export interface UserData {
 	bungieNetUser: BungieNetUser;
 	destinyMemberships: DestinyMembership[];
 }
-export enum MembershipType {
-	Xbox = 1,
-	PlayStation = 2,
-	Steam = 3,
-	Blizzard = 4,
-	Stadia = 5
-}
+
 
 // profileData
 export interface ProfileData {
@@ -70,12 +64,7 @@ export interface ProfileData {
 	loadouts: Loadout[];
 }
 // Character types
-export enum ClassType {
-	Titan = 0,
-	Hunter = 1,
-	Warlock = 2,
-	Unknown = 3
-}
+
 export interface Character {
 	characterId: string;
 	membershipType: number;
@@ -96,56 +85,6 @@ export interface Character {
 	};
 }
 
-// Item types
-export enum DestinyItemType {
-	None = 0,
-	Currency = 1,
-	Armor = 2,
-	Weapon = 3,
-	Message = 7,
-	Engram = 8,
-	Consumable = 9,
-	ExchangeMaterial = 10,
-	MissionReward = 11,
-	QuestStep = 12,
-	QuestStepComplete = 13,
-	Emblem = 14,
-	Quest = 15,
-	Subclass = 16,
-	ClanBanner = 17,
-	Aura = 18,
-	Mod = 19,
-	Dummy = 20,
-	Ship = 21,
-	Vehicle = 22,
-	Emote = 23,
-	Ghost = 24,
-	Package = 25,
-	Bounty = 26,
-	Wrapper = 27,
-	SeasonalArtifact = 28,
-	Finisher = 29,
-	Pattern = 30
-}
-export enum DamageType {
-	None = 0,
-	Kinetic = 1,
-	Arc = 2,
-	Thermal = 3,
-	Void = 4,
-	Raid = 5,
-	Stasis = 6,
-	Strand = 7
-}
-export enum TierType {
-	Unknown = 0,
-	Currency = 1,
-	Basic = 2,
-	Common = 3,
-	Rare = 4,
-	Superior = 5,
-	Exotic = 6
-}
 export interface InventoryItem {
 	itemHash: number;
 	itemInstanceId: string;
@@ -320,6 +259,7 @@ export interface DestinyInventoryItemDefinition {
 	itemTypeDisplayName: string;
 	itemSubType: number;
 	classType: number;
+	breakerType: number;
 	stats: ItemStats;
 	investmentStats: [statTypeHash: number, value: number, isConditionallyActive: boolean];
 	inventory?: {
@@ -373,3 +313,188 @@ export interface DestinyStatDefinition {
 	statCategory: number;
 	interpolate: boolean;
 }
+//other types
+export interface SearchCriteria {
+	itemName: string;
+	itemType: DestinyItemType | null;
+	damageType: DamageType | null;
+	bucketType: number | null;
+	tierType: TierType | null;
+  }
+// enum types
+export enum MembershipType {
+	Xbox = 1,
+	PlayStation = 2,
+	Steam = 3,
+	Blizzard = 4,
+	Stadia = 5
+}
+export enum ClassType {
+	Titan = 0,
+	Hunter = 1,
+	Warlock = 2,
+	Unknown = 3
+}
+export enum DestinyItemType {
+	None = 0,
+	Currency = 1,
+	Armor = 2,
+	Weapon = 3,
+	Message = 7,
+	Engram = 8,
+	Consumable = 9,
+	ExchangeMaterial = 10,
+	MissionReward = 11,
+	QuestStep = 12,
+	QuestStepComplete = 13,
+	Emblem = 14,
+	Quest = 15,
+	Subclass = 16,
+	ClanBanner = 17,
+	Aura = 18,
+	Mod = 19,
+	Dummy = 20,
+	Ship = 21,
+	Vehicle = 22,
+	Emote = 23,
+	Ghost = 24,
+	Package = 25,
+	Bounty = 26,
+	Wrapper = 27,
+	SeasonalArtifact = 28,
+	Finisher = 29,
+	Pattern = 30
+}
+export enum DestinyItemSubType {
+	None = 0,
+	Crucible = 1,
+	Vanguard = 2,
+	Exotic = 5,
+	AutoRifle = 6,
+	Shotgun = 7,
+	Machinegun = 8,
+	HandCannon = 9,
+	RocketLauncher = 10,
+	FusionRifle = 11,
+	SniperRifle = 12,
+	PulseRifle = 13,
+	ScoutRifle = 14,
+	Crm = 16,
+	Sidearm = 17,
+	Sword = 18,
+	Mask = 19,
+	Shader = 20,
+	Ornament = 21,
+	FusionRifleLine = 22,
+	GrenadeLauncher = 23,
+	SubmachineGun = 24,
+	TraceRifle = 25,
+	HelmetArmor = 26,
+	GauntletsArmor = 27,
+	ChestArmor = 28,
+	LegArmor = 29,
+	ClassArmor = 30,
+	Bow = 31,
+	DummyRepeatableBounty = 32,
+	Glaive = 33
+}
+export enum DamageType {
+	None = 0,
+	Kinetic = 1,
+	Arc = 2,
+	Thermal = 3,
+	Void = 4,
+	Raid = 5,
+	Stasis = 6,
+	Strand = 7
+}
+export enum TierType {
+	Unknown = 0,
+	Currency = 1,
+	Basic = 2,
+	Common = 3,
+	Rare = 4,
+	Superior = 5,
+	Exotic = 6
+}
+export enum BreakerType {
+	None = 0,
+	ShieldPiercing = 1,
+	Disruption = 2,
+	Stagger = 3
+}
+export enum DestinyItemLocation {
+	Unknown = 0,
+	Inventory = 1,
+	Vault = 2,
+	Vendor = 3,
+	Postmaster = 4
+}
+
+//hashes I cannot be bothered to get from manifest
+export const BUCKET_HASH: { [key: number]: string } = {
+	3448274439: "Helmet",
+	3551918588: "Gauntlets",
+	14239492: "Chest Armor",
+	20886954: "Leg Armor",
+	1585787867: "Class Armor",
+	1498876634: "Kinetic Weapon",
+	2465295065: "Energy Weapon",
+	953998645: "Power Weapon",
+	4023194814: "Ghost",
+	138197802: "General",
+};
+export const SUBCLASS_BUCKET_HASH = [
+	3284755031, // subclass
+];
+export const ARMOR_BUCKET_HASH = [
+	3448274439, // Helmet
+	3551918588, // Gauntlets
+	14239492, // Chest Armor
+	20886954, // Leg Armor
+	1585787867, // Class Armor
+];
+export const WEAPON_BUCKET_HASH = [
+	1498876634, // Kinetic Weapon
+	2465295065, // Energy Weapon
+	953998645, // Power Weapon
+	4023194814, // Ghost
+];
+export const UNWANTED_BUCKET_HASH = [
+	3284755031, 444348033, 497170007, 1801258597, 2401704334, 2422292810,
+	3621873013,
+];
+export const STAT_ORDER = [
+	"1935470627", // Power
+	"2996146975", // Mobility
+	"392767087", // Resilience
+	"1943323491", // Recovery
+	"1735777505", // Discipline
+	"144602215", // Intellect
+	"4244567218", // Strength
+];
+export const DEFAULT_STAT_ORDER = [
+	"2996146975", // Mobility
+	"392767087", // Resilience
+	"1943323491", // Recovery
+	"1735777505", // Discipline
+	"144602215", // Intellect
+	"4244567218", // Strength
+];
+export const ITEM_ORDER = [
+	1498876634, // Kinetic Weapons
+	2465295065, // Energy Weapons
+	953998645, // Power Weapons
+	4023194814, // Ghost
+	3448274439, // Helmet
+	3551918588, // Gauntlets
+	14239492, // Chest Armor
+	20886954, // Leg Armor
+	1585787867, // Class Armor
+	2025709351, // Vehicle
+	284967655, // Ships
+	4274335291, // Emblems
+	3683254069, // Finishers
+	375726501, // Engrams
+	1345459588, // Quests
+];
