@@ -337,6 +337,12 @@ export enum ClassType {
 	Warlock = 2,
 	Unknown = 3
 }
+export enum RaceType {
+	Human = 0,
+	Awoken = 1,
+	Exo = 2,
+	Unknown = 3
+}
 export enum DestinyItemType {
 	Armor = 2,
 	Weapon = 3,
