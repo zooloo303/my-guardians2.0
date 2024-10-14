@@ -55,7 +55,7 @@
 	}
 </script>
 
-<div class="space-y-4">
+<div class="space-y-4 px-4 sm:px-6 md:px-8">
 	<div>
 		<Label for="itemName">Item Name</Label>
 		<Input
@@ -144,7 +144,7 @@
 			</Select.Root>
 		</div>
 		<div>
-			<Label for="tierType">Tier Type</Label>
+			<Label for="tierType">Tier</Label>
 			<Select.Root bind:selected={tierType}>
 				<Select.Trigger class="w-full">
 					<Select.Value placeholder="Select tier type" />
@@ -163,7 +163,7 @@
 			</Select.Root>
 		</div>
 		<div>
-			<Label for="breakerType">Breaker Type</Label>
+			<Label for="breakerType">Breaker</Label>
 			<Select.Root bind:selected={breakerType}>
 				<Select.Trigger class="w-full">
 					<Select.Value placeholder="Select breaker type" />

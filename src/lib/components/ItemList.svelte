@@ -40,7 +40,7 @@
 					const matchesDamageType =
 						!criteria.damageType || item.instance?.damageType === criteria.damageType.value;
 					const matchesClassType =
-						!criteria.classType || itemDef.classType === criteria.classType.value; // Changed from bucketType to classType
+						!criteria.classType || itemDef.classType === criteria.classType.value;
 					const matchesTierType =
 						!criteria.tierType || itemDef.inventory?.tierType === criteria.tierType.value;
 					const matchesBreakerType =
@@ -54,7 +54,7 @@
 						matchesTierType &&
 						matchesBreakerType
 						? item
-						: null; // Changed matchesBucketType to matchesClassType
+						: null; 
 				})
 			)
 		).filter((item): item is InventoryItemWithComponents => item !== null);

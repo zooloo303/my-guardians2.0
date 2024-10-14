@@ -359,7 +359,7 @@ export enum DestinyItemSubType {
 	Sidearm = 17,
 	Sword = 18,
 	Mask = 19,
-	FusionRifleLine = 22,
+	LinearFusionRifle = 22,
 	GrenadeLauncher = 23,
 	SubmachineGun = 24,
 	TraceRifle = 25,
@@ -385,13 +385,13 @@ export enum TierType {
 	Basic = 2,
 	Common = 3,
 	Rare = 4,
-	Superior = 5,
+	Legendary = 5,
 	Exotic = 6
 }
 export enum BreakerType {
-	ShieldPiercing = 1,
-	Disruption = 2,
-	Stagger = 3
+	AntiBarrier = 1,
+	Overload = 2,
+	Unstoppable = 3
 }
 export enum DestinyItemLocation {
 	Unknown = 0,
