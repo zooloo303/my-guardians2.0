@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { Button } from '$lib/components/ui/button';
-	import { Avatar, AvatarImage } from '$lib/components/ui/avatar';
 	import { equipItem, transferItem } from '$lib/utils/itemActions';
 	import { findItemInInventory, bngBaseUrl } from '$lib/utils/helpers';
 	import type { Character, InventoryItem, ItemInstance } from '$lib/utils/types';
@@ -21,11 +20,7 @@
 		if (!currentItemLocation) return false;
 		return currentItemLocation.location === character.characterId && !itemInstance.isEquipped;
 	}
-	// $inspect('itemInstanceId :', itemInstanceId);
-	// $inspect('itemInstance :', itemInstance);
-	// $inspect('characters', characters);
-	// $inspect('currentItemLocation', currentItemLocation);
-	// $inspect('isInVault', isInVault);
+
 
 	function canTransfer(character: Character): boolean {
 		if (!currentItemLocation) return false;
@@ -35,35 +30,53 @@
 	}
 
 	async function handleEquip(character: Character) {
+		console.log('Attempting to equip item', { itemInstanceId, character });
 		if (canEquip(character)) {
-			await equipItem(itemInstanceId, character.characterId, character.membershipType);
+			try {
+				const result = await equipItem(itemInstanceId, character.characterId, character.membershipType);
+				console.log('Equip result:', result);
+				console.log('Item equipped successfully');
+			} catch (error) {
+				console.error('Error equipping item:', error);
+			}
+		} else {
+			console.log('Cannot equip item', { canEquip: canEquip(character) });
 		}
 	}
 
 	async function handleTransfer(character: Character) {
+		console.log('Attempting to transfer item', { itemInstanceId, character });
 		if (!currentItemLocation) return;
 		const item = currentItemLocation.item as InventoryItem;
 
-		if (itemInstance.isEquipped) {
-			await transferItem(
-				item.itemHash,
-				item.quantity,
-				true,
-				itemInstanceId,
-				character.characterId,
-				character.membershipType
-			);
-		}
+		try {
+			if (itemInstance.isEquipped) {
+				const result = await transferItem(
+					item.itemHash,
+					item.quantity,
+					true,
+					itemInstanceId,
+					character.characterId,
+					character.membershipType
+				);
+				console.log('Transfer result for equipped item:', result);
+			}
 
-		if (isInVault || canTransfer(character)) {
-			await transferItem(
-				item.itemHash,
-				item.quantity,
-				isInVault ? false : true,
-				itemInstanceId,
-				character.characterId,
-				character.membershipType
-			);
+			if (isInVault || canTransfer(character)) {
+				const result = await transferItem(
+					item.itemHash,
+					item.quantity,
+					isInVault ? false : true,
+					itemInstanceId,
+					character.characterId,
+					character.membershipType
+				);
+				console.log('Transfer result:', result);
+			} else {
+				console.log('Cannot transfer item', { isInVault, canTransfer: canTransfer(character) });
+			}
+		} catch (error) {
+			console.error('Error transferring item:', error);
 		}
 	}
 </script>
@@ -77,14 +90,15 @@
 					variant="ghost"
 					size="icon"
 					disabled={!canEquip(character as Character)}
-					onclick={() => handleEquip(character as Character)}
+					on:click={() => handleEquip(character as Character)}
+					class="relative p-0 h-8 w-8 overflow-hidden"
 				>
-					<Avatar>
-						<AvatarImage
-							src={`${bngBaseUrl}${character.emblemPath}`}
-							alt={`Equip on ${character.classType}`}
-						/>
-					</Avatar>
+					<img
+						src={`${bngBaseUrl}${character.emblemPath}`}
+						alt={`Equip on ${character.classType}`}
+						class="w-full h-full object-cover"
+					/>
+					<span class="sr-only">Equip on {character.classType}</span>
 				</Button>
 			{/each}
 		</div>
@@ -98,14 +112,15 @@
 					variant="ghost"
 					size="icon"
 					disabled={!canTransfer(character as Character)}
-					onclick={() => handleTransfer(character as Character)}
+					on:click={() => handleTransfer(character as Character)}
+					class="relative p-0 h-8 w-8 overflow-hidden"
 				>
-					<Avatar>
-						<AvatarImage
-							src={`${bngBaseUrl}${character.emblemPath}`}
-							alt={`Transfer to ${character.classType}`}
-						/>
-					</Avatar>
+					<img
+						src={`${bngBaseUrl}${character.emblemPath}`}
+						alt={`Transfer to ${character.classType}`}
+						class="w-full h-full object-cover"
+					/>
+					<span class="sr-only">Transfer to {character.classType}</span>
 				</Button>
 			{/each}
 		</div>

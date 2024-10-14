@@ -27,7 +27,6 @@ export async function equipItem(
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`Failed to equip item. Status: ${response.status}, Error: ${errorText}`);
       throw new Error(`Failed to equip item: ${errorText}`);
     }
 
@@ -68,13 +67,17 @@ export async function transferItem(
     });
 
     if (!response.ok) {
-      throw new Error("Failed to transfer item");
+      const errorText = await response.text();
+      throw new Error(`Failed to transfer item: ${errorText}`);
     }
 
-    toast.success("Item transfered successfully");
+    const data = await response.json();
+    toast.success("Item transferred successfully");
+    return data;
   } catch (error) {
-    console.error("Error transfering item:", error);
-    toast.error("Failed to transfer item");
+    console.error("Error transferring item:", error);
+    toast.error(`${error.message}`);
+    throw error;
   }
 }
 
@@ -99,12 +102,16 @@ export async function equipItems(
     });
 
     if (!response.ok) {
-      throw new Error("Failed to equip items");
+      const errorText = await response.text();
+      throw new Error(`Failed to equip items: ${errorText}`);
     }
 
-    toast.success("Item equip successfully");
+    const data = await response.json();
+    toast.success("Items equipped successfully");
+    return data;
   } catch (error) {
     console.error("Error equipping items:", error);
-    toast.error("Failed to equip items");
+    toast.error(`${error.message}`);
+    throw error;
   }
 }

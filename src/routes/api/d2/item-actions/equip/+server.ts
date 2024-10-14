@@ -4,8 +4,6 @@ import { bngBaseUrl } from "$lib/utils/helpers";
 import { BUNGIE_API_KEY } from "$env/static/private";
 import type { DestinyItemActionRequest } from "$lib/utils/types";
 
-
-
 export const POST: RequestHandler = async ({ request, fetch, cookies }) => {
   try {
     const { itemId, characterId, membershipType }: DestinyItemActionRequest =

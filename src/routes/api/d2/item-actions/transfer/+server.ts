@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request, fetch, cookies }) => {
 
     return json({ success: true });
   } catch (error) {
-    console.error("Error transfering item:", error);
+    console.error("Error transferring item:", error);
     return json({ error: "Internal server error" }, { status: 500 });
   }
 };
