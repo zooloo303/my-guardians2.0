@@ -1,16 +1,17 @@
 <script lang="ts">
-	import { HoverCard, HoverCardContent, HoverCardTrigger } from '$lib/components/ui/hover-card';
-	import { Progress } from '$lib/components/ui/progress';
-	import { Tooltip, TooltipContent, TooltipTrigger } from '$lib/components/ui/tooltip';
-	import { getManifestData } from '$lib/utils/indexedDB';
+	import type { Snippet } from 'svelte';
 	import { bngBaseUrl } from '$lib/utils/helpers';
+	import { Progress } from '$lib/components/ui/progress';
+	import { getManifestData } from '$lib/utils/indexedDB';
+	import ItemActions from '$lib/components/ItemActions.svelte';
+	import { Tooltip, TooltipContent, TooltipTrigger } from '$lib/components/ui/tooltip';
+	import { HoverCard, HoverCardContent, HoverCardTrigger } from '$lib/components/ui/hover-card';
 	import type {
 		InventoryItemWithComponents,
 		DestinyInventoryItemDefinition,
 		DestinyDamageTypeDefinition,
 		DestinyStatDefinition
 	} from '$lib/utils/types';
-	import type { Snippet } from 'svelte';
 
 	let {
 		item,
@@ -19,21 +20,26 @@
 		item: InventoryItemWithComponents;
 		children: Snippet;
 	} = $props();
-
+	let itemInstanceId = $derived(item.itemInstanceId);
 	let itemData = $state<{
 		itemDefinition: DestinyInventoryItemDefinition | null;
 		damageTypeDefinition: DestinyDamageTypeDefinition | null;
 		statDefinitions: Record<string, DestinyStatDefinition>;
 		socketDefinitions: Record<number, DestinyInventoryItemDefinition>;
-	}>({ itemDefinition: null, damageTypeDefinition: null, statDefinitions: {}, socketDefinitions: {} });
+	}>({
+		itemDefinition: null,
+		damageTypeDefinition: null,
+		statDefinitions: {},
+		socketDefinitions: {}
+	});
 
 	$effect(() => {
 		async function fetchData() {
 			const [itemDef, damageDef] = await Promise.all([
 				getManifestData<DestinyInventoryItemDefinition>(
-						'DestinyInventoryItemDefinition',
-						item.itemHash
-					),
+					'DestinyInventoryItemDefinition',
+					item.itemHash
+				),
 				item.instance?.damageTypeHash
 					? getManifestData<DestinyDamageTypeDefinition>(
 							'DestinyDamageTypeDefinition',
@@ -79,31 +85,43 @@
 	<HoverCardTrigger>
 		{@render children()}
 	</HoverCardTrigger>
-	<HoverCardContent class="w-96 relative">
+	<HoverCardContent class="relative w-96">
 		{#if itemData.itemDefinition}
 			{#if itemData.itemDefinition.screenshot}
 				<div
 					class="absolute inset-0 bg-cover bg-center opacity-70"
-					style="background-image: url('{bngBaseUrl}{itemData.itemDefinition.screenshot}'); background-size: contain; background-repeat: no-repeat;"
+					style="background-image: url('{bngBaseUrl}{itemData.itemDefinition
+						.screenshot}'); background-size: contain; background-repeat: no-repeat;"
 				></div>
 			{/if}
 			<div class="relative z-10 flex flex-col space-y-3 p-4">
-				<div class="flex items-center space-x-2">
-					<h3 class="text-lg font-semibold">{itemData.itemDefinition.displayProperties.name}</h3>
-					{#if itemData.damageTypeDefinition}
-						<img
-							src={`${bngBaseUrl}${itemData.damageTypeDefinition.displayProperties.icon}`}
-							alt={itemData.damageTypeDefinition.displayProperties.name}
-							class="h-6 w-6"
-						/>
-					{/if}
+				<div class="flex flex-row items-center justify-between">
+					<div>
+						<div class="flex items-center space-x-2">
+							<h3 class="text-lg font-semibold">
+								{itemData.itemDefinition.displayProperties.name}
+							</h3>
+							{#if itemData.damageTypeDefinition}
+								<img
+									src={`${bngBaseUrl}${itemData.damageTypeDefinition.displayProperties.icon}`}
+									alt={itemData.damageTypeDefinition.displayProperties.name}
+									class="h-6 w-6"
+								/>
+							{/if}
+						</div>
+						<p class="text-sm text-muted-foreground">
+							{itemData.itemDefinition.itemTypeDisplayName}
+						</p>
+						<p class="text-sm font-medium">
+							Power Level: {item.instance?.primaryStat?.value || 'N/A'}
+						</p>
+					</div>
+					<ItemActions {itemInstanceId} itemInstance={item.instance} />
 				</div>
-				<p class="text-sm text-muted-foreground">{itemData.itemDefinition.itemTypeDisplayName}</p>
-				<p class="text-sm font-medium">Power Level: {item.instance?.primaryStat?.value || 'N/A'}</p>
 
 				{#if item.sockets?.sockets}
 					<div class="flex flex-wrap gap-2">
-						{#each item.sockets.sockets.filter(socket => socket.isEnabled && socket.isVisible) as socket}
+						{#each item.sockets.sockets.filter((socket) => socket.isEnabled && socket.isVisible) as socket}
 							{#if itemData.socketDefinitions[socket.plugHash]}
 								<Tooltip>
 									<TooltipTrigger>
