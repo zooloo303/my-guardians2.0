@@ -4,7 +4,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Select from '$lib/components/ui/select';
 	import type { SearchCriteria } from '$lib/utils/types';
-	import { BUCKET_HASH, DamageType, TierType, BreakerType, DestinyItemType, DestinyItemSubType } from '$lib/utils/types';
+	import { BUCKET_HASH, DamageType, TierType, BreakerType, DestinyItemType, DestinyItemSubType, ClassType } from '$lib/utils/types';
 	
 	let { onSearch, 
 		  itemName = $bindable(''), 
@@ -12,7 +12,7 @@
 		  itemSubType = $bindable<DestinyItemSubType | null>(null),
 		  damageType = $bindable<DamageType | null>(null),
 		  breakerType = $bindable<BreakerType | null>(null),
-		  bucketType = $bindable<number | null>(null),
+		  classType = $bindable<ClassType | null>(null),
 		  tierType = $bindable<TierType | null>(null)
 		} = $props<{ 
 			onSearch: (criteria: SearchCriteria) => void, 
@@ -21,12 +21,12 @@
 			itemSubType: DestinyItemSubType | null,
 			damageType: DamageType | null,
 			breakerType: BreakerType | null,
-			bucketType: number | null,
+			classType: ClassType | null,
 			tierType: TierType | null
 		}>();
 
 	function search() {
-		onSearch({ itemName, itemType, itemSubType, damageType, bucketType, tierType, breakerType });
+		onSearch({ itemName, itemType, itemSubType, damageType, classType, tierType, breakerType });
 	}
 
 	function reset() {
@@ -34,9 +34,16 @@
 		itemType = null;
 		itemSubType = null;
 		damageType = null;
-		bucketType = null;
+		classType = null;
 		tierType = null;
 		breakerType = null;
+		search()
+	}
+
+	function handleKeydown(event: KeyboardEvent) {
+		if (event.key === 'Enter') {
+			search();
+		}
 	}
 </script>
 
@@ -44,12 +51,12 @@
 <div class="space-y-4">
     <div>
         <Label for="itemName">Item Name</Label>
-        <Input id="itemName" bind:value={itemName} placeholder="Search items..." />
+        <Input id="itemName" bind:value={itemName} placeholder="Search items..." on:keydown={handleKeydown} />
     </div>
 
     <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
         <div>
-            <Label for="itemType">Item Type</Label>
+            <Label for="itemType">Type</Label>
             <Select.Root bind:selected={itemType}>
                 <Select.Trigger class="w-full">
                     <Select.Value placeholder="Select item type" />
@@ -68,12 +75,12 @@
             </Select.Root>
         </div>
         <div>
-            <Label for="itemSubType">Item Subtype</Label>
+            <Label for="itemSubType">Subtype</Label>
             <Select.Root bind:selected={itemSubType}>
                 <Select.Trigger class="w-full">
                     <Select.Value placeholder="Select item subtype" />
                 </Select.Trigger>
-                <Select.Content>
+                <Select.Content class="max-h-[300px] overflow-y-auto">
                     <Select.Group>
                         <Select.Label>Item Subtypes</Select.Label>
                         <Select.Item value={null}>Any</Select.Item>
@@ -106,36 +113,19 @@
             </Select.Root>
         </div>
         <div>
-            <Label for="breakerType">Breaker Type</Label>
-            <Select.Root bind:selected={breakerType}>
+            <Label for="classType">Class Type</Label>
+            <Select.Root bind:selected={classType}>
                 <Select.Trigger class="w-full">
-                    <Select.Value placeholder="Select breaker type" />
+                    <Select.Value placeholder="Select class type" />
                 </Select.Trigger>
                 <Select.Content>
                     <Select.Group>
-                        <Select.Label>Breaker Types</Select.Label>
+                        <Select.Label>Class Types</Select.Label>
                         <Select.Item value={null}>Any</Select.Item>
-                        {#each Object.entries(BreakerType) as [key, value]}
+                        {#each Object.entries(ClassType) as [key, value]}
                             {#if typeof value === 'number'}
                                 <Select.Item {value}>{key}</Select.Item>
                             {/if}
-                        {/each}
-                    </Select.Group>
-                </Select.Content>
-            </Select.Root>
-        </div>
-        <div>
-            <Label for="bucketType">Inventory Bucket</Label>
-            <Select.Root bind:selected={bucketType}>
-                <Select.Trigger class="w-full">
-                    <Select.Value placeholder="Select bucket type" />
-                </Select.Trigger>
-                <Select.Content>
-                    <Select.Group>
-                        <Select.Label>Bucket Types</Select.Label>
-                        <Select.Item value={null}>Any</Select.Item>
-                        {#each Object.entries(BUCKET_HASH) as [hash, name]}
-                            <Select.Item value={parseInt(hash)}>{name}</Select.Item>
                         {/each}
                     </Select.Group>
                 </Select.Content>
@@ -152,6 +142,25 @@
                         <Select.Label>Tier Types</Select.Label>
                         <Select.Item value={null}>Any</Select.Item>
                         {#each Object.entries(TierType) as [key, value]}
+                            {#if typeof value === 'number'}
+                                <Select.Item {value}>{key}</Select.Item>
+                            {/if}
+                        {/each}
+                    </Select.Group>
+                </Select.Content>
+            </Select.Root>
+        </div>
+		<div>
+            <Label for="breakerType">Breaker Type</Label>
+            <Select.Root bind:selected={breakerType}>
+                <Select.Trigger class="w-full">
+                    <Select.Value placeholder="Select breaker type" />
+                </Select.Trigger>
+                <Select.Content>
+                    <Select.Group>
+                        <Select.Label>Breaker Types</Select.Label>
+                        <Select.Item value={null}>Any</Select.Item>
+                        {#each Object.entries(BreakerType) as [key, value]}
                             {#if typeof value === 'number'}
                                 <Select.Item {value}>{key}</Select.Item>
                             {/if}

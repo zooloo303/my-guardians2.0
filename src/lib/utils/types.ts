@@ -316,13 +316,13 @@ export interface DestinyStatDefinition {
 //other types
 export interface SearchCriteria {
 	itemName: string;
-	itemType: DestinyItemType | null;
-	itemSubType: DestinyItemSubType | null;
-	damageType: DamageType | null;
-	breakerType: BreakerType | null;
-	bucketType: number | null;
-	tierType: TierType | null;
-  }
+	itemType: { value: DestinyItemType; label: string } | null;
+	itemSubType: { value: DestinyItemSubType; label: string } | null;
+	damageType: { value: DamageType; label: string } | null;
+	breakerType: { value: BreakerType; label: string } | null;
+	classType: { value: ClassType; label: string } | null; // Changed from bucketType to classType
+	tierType: { value: TierType; label: string } | null;
+}
 // enum types
 export enum MembershipType {
 	Xbox = 1,
@@ -338,40 +338,15 @@ export enum ClassType {
 	Unknown = 3
 }
 export enum DestinyItemType {
-	None = 0,
-	Currency = 1,
 	Armor = 2,
 	Weapon = 3,
-	Message = 7,
-	Engram = 8,
-	Consumable = 9,
-	ExchangeMaterial = 10,
-	MissionReward = 11,
-	QuestStep = 12,
-	QuestStepComplete = 13,
 	Emblem = 14,
-	Quest = 15,
 	Subclass = 16,
-	ClanBanner = 17,
-	Aura = 18,
-	Mod = 19,
-	Dummy = 20,
 	Ship = 21,
 	Vehicle = 22,
-	Emote = 23,
-	Ghost = 24,
-	Package = 25,
-	Bounty = 26,
-	Wrapper = 27,
-	SeasonalArtifact = 28,
-	Finisher = 29,
-	Pattern = 30
+	Ghost = 24
 }
 export enum DestinyItemSubType {
-	None = 0,
-	Crucible = 1,
-	Vanguard = 2,
-	Exotic = 5,
 	AutoRifle = 6,
 	Shotgun = 7,
 	Machinegun = 8,
@@ -381,12 +356,9 @@ export enum DestinyItemSubType {
 	SniperRifle = 12,
 	PulseRifle = 13,
 	ScoutRifle = 14,
-	Crm = 16,
 	Sidearm = 17,
 	Sword = 18,
 	Mask = 19,
-	Shader = 20,
-	Ornament = 21,
 	FusionRifleLine = 22,
 	GrenadeLauncher = 23,
 	SubmachineGun = 24,
@@ -397,22 +369,19 @@ export enum DestinyItemSubType {
 	LegArmor = 29,
 	ClassArmor = 30,
 	Bow = 31,
-	DummyRepeatableBounty = 32,
 	Glaive = 33
 }
 export enum DamageType {
 	None = 0,
 	Kinetic = 1,
 	Arc = 2,
-	Thermal = 3,
+	Solar = 3,
 	Void = 4,
 	Raid = 5,
 	Stasis = 6,
 	Strand = 7
 }
 export enum TierType {
-	Unknown = 0,
-	Currency = 1,
 	Basic = 2,
 	Common = 3,
 	Rare = 4,
@@ -420,7 +389,6 @@ export enum TierType {
 	Exotic = 6
 }
 export enum BreakerType {
-	None = 0,
 	ShieldPiercing = 1,
 	Disruption = 2,
 	Stagger = 3

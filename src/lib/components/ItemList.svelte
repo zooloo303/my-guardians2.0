@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Item from '$lib/components/Item.svelte';
+	import { getManifestData } from '$lib/utils/indexedDB';
 	import ItemSearch from '$lib/components/ItemSearch.svelte';
 	import { getUniqueInventoryItems } from '$lib/utils/helpers';
-	import { getManifestData } from '$lib/utils/indexedDB';
 	import type { ProfileData, InventoryItemWithComponents, DestinyInventoryItemDefinition, SearchCriteria } from '$lib/utils/types';
 
 	// Props
@@ -17,7 +17,7 @@
 	// Search function
 	async function handleSearch(criteria: SearchCriteria) {
 		console.log('Search criteria:', criteria);
-		filteredItems = await Promise.all(items.map(async (item) => {
+		filteredItems = (await Promise.all(items.map(async (item) => {
 			const itemDef = await getManifestData<DestinyInventoryItemDefinition>(
 				'DestinyInventoryItemDefinition',
 				item.itemHash
@@ -25,17 +25,16 @@
 			if (!itemDef) return null;
 
 			const matchesName = !criteria.itemName || itemDef.displayProperties.name.toLowerCase().includes(criteria.itemName.toLowerCase());
-			const matchesItemType = criteria.itemType === null || itemDef.itemType === criteria.itemType.value;
-			const matchesItemSubType = criteria.itemSubType === null || itemDef.itemSubType === criteria.itemSubType.value;
-			const matchesDamageType = criteria.damageType === null || item.instance?.damageType === criteria.damageType.value;
-			const matchesBucketType = criteria.bucketType === null || item.bucketHash === criteria.bucketType.value;
-			const matchesTierType = criteria.tierType === null || itemDef.inventory?.tierType === criteria.tierType.value;
-			const matchesBreakerType = criteria.breakerType === null || itemDef.breakerType === criteria.breakerType.value;
+			const matchesItemType = !criteria.itemType || itemDef.itemType === criteria.itemType.value;
+			const matchesItemSubType = !criteria.itemSubType || itemDef.itemSubType === criteria.itemSubType.value;
+			const matchesDamageType = !criteria.damageType || item.instance?.damageType === criteria.damageType.value;
+			const matchesClassType = !criteria.classType || itemDef.classType === criteria.classType.value; // Changed from bucketType to classType
+			const matchesTierType = !criteria.tierType || itemDef.inventory?.tierType === criteria.tierType.value;
+			const matchesBreakerType = !criteria.breakerType || itemDef.breakerType === criteria.breakerType.value;
 
 			return matchesName && matchesItemType && matchesItemSubType && matchesDamageType && 
-				   matchesBucketType && matchesTierType && matchesBreakerType ? item : null;
-		}));
-		filteredItems = filteredItems.filter((item): item is InventoryItemWithComponents => item !== null);
+				   matchesClassType && matchesTierType && matchesBreakerType ? item : null; // Changed matchesBucketType to matchesClassType
+		}))).filter((item): item is InventoryItemWithComponents => item !== null);
 	}
 </script>
 
