@@ -1,14 +1,16 @@
 <script lang="ts">
+	import { LogOut } from 'lucide-svelte';
 	import Auth from '$lib/components/Auth.svelte';
+	import { bngBaseUrl } from '$lib/utils/helpers';
 	import type { UserData } from '$lib/utils/types';
+	import NavTab from '$lib/components/NavTab.svelte';
+	import { Button } from '$lib/components/ui/button';
 	import LightSwitch from '$lib/components/LightSwitch.svelte';
 	import MembershipCard from '$lib/components/MembershipCard.svelte';
 	import { Popover, PopoverTrigger, PopoverContent } from '$lib/components/ui/popover';
 	import { Avatar, AvatarImage, AvatarFallback } from '$lib/components/ui/avatar';
-	import { Button } from '$lib/components/ui/button';
-	import { LogOut } from 'lucide-svelte';
-	import { bngBaseUrl } from '$lib/utils/helpers';
 
+	
 	// Props
 	let { user } = $props<{ user: UserData | null }>();
 
@@ -28,6 +30,7 @@
 			<LightSwitch />
 			<h1 class="text-2xl font-bold">myGuardians</h1>
 		</div>
+		<NavTab />
 		{#if user}
 			<div class="flex items-center space-x-4">
 				<Popover>
