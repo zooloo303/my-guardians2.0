@@ -1,9 +1,10 @@
 <script lang="ts">
-	import ItemHoverCard from '$lib/components/ItemHoverCard.svelte';
 	import { bngBaseUrl } from '$lib/utils/helpers';
 	import { getManifestData } from '$lib/utils/indexedDB';
 	import { Card, CardContent } from '$lib/components/ui/card';
+	import ItemHoverCard from '$lib/components/ItemHoverCard.svelte';
 	import type {
+		SUBCLASS_BUCKET_HASH,
 		InventoryItemWithComponents,
 		DestinyInventoryItemDefinition,
 		DestinyDamageTypeDefinition
@@ -74,7 +75,7 @@
 							class="mr-2 h-4 w-4"
 						/>
 					{/if}
-					{#if itemData.powerLevel !== undefined}
+					{#if itemData.powerLevel !== undefined && itemData.powerLevel !== 1}
 						<span>{itemData.powerLevel}</span>
 					{/if}
 				</div>

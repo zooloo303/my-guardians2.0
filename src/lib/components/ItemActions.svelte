@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { ClassType } from '$lib/utils/types';
 	import { Button } from '$lib/components/ui/button';
 	import { equipItem, transferItem } from '$lib/utils/itemActions';
 	import { findItemInInventory, bngBaseUrl } from '$lib/utils/helpers';
 	import type { Character, InventoryItem, ItemInstance } from '$lib/utils/types';
+	import { Tooltip, TooltipTrigger, TooltipContent } from '$lib/components/ui/tooltip';
 
 	let { itemInstanceId, itemInstance } = $props<{
 		itemInstanceId: string;
@@ -86,20 +88,27 @@
 		<h3 class="mb-2 text-sm font-semibold">Equip Item on:</h3>
 		<div class="flex space-x-2">
 			{#each characters as character}
-				<Button
-					variant="ghost"
-					size="icon"
-					disabled={!canEquip(character as Character)}
-					on:click={() => handleEquip(character as Character)}
-					class="relative p-0 h-8 w-8 overflow-hidden"
-				>
-					<img
-						src={`${bngBaseUrl}${character.emblemPath}`}
-						alt={`Equip on ${character.classType}`}
-						class="w-full h-full object-cover"
-					/>
-					<span class="sr-only">Equip on {character.classType}</span>
-				</Button>
+				<Tooltip>
+					<TooltipTrigger>
+						<Button
+							variant="ghost"
+							size="icon"
+							disabled={!canEquip(character as Character)}
+							on:click={() => handleEquip(character as Character)}
+							class="relative p-0 h-8 w-8 overflow-hidden"
+						>
+							<img
+								src={`${bngBaseUrl}${character.emblemPath}`}
+								alt={`Equip on ${ClassType[character.classType]}`}
+								class="w-full h-full object-cover"
+							/>
+							<span class="sr-only">Equip on {ClassType[character.classType]}</span>
+						</Button>
+					</TooltipTrigger>
+					<TooltipContent>
+						<p>Equip on {ClassType[character.classType]}</p>
+					</TooltipContent>
+				</Tooltip>
 			{/each}
 		</div>
 	</div>
@@ -108,20 +117,27 @@
 		<h3 class="mb-2 text-sm font-semibold">Transfer Item to:</h3>
 		<div class="flex space-x-2">
 			{#each characters as character}
-				<Button
-					variant="ghost"
-					size="icon"
-					disabled={!canTransfer(character as Character)}
-					on:click={() => handleTransfer(character as Character)}
-					class="relative p-0 h-8 w-8 overflow-hidden"
-				>
-					<img
-						src={`${bngBaseUrl}${character.emblemPath}`}
-						alt={`Transfer to ${character.classType}`}
-						class="w-full h-full object-cover"
-					/>
-					<span class="sr-only">Transfer to {character.classType}</span>
-				</Button>
+				<Tooltip>
+					<TooltipTrigger>
+						<Button
+							variant="ghost"
+							size="icon"
+							disabled={!canTransfer(character as Character)}
+							on:click={() => handleTransfer(character as Character)}
+							class="relative p-0 h-8 w-8 overflow-hidden"
+						>
+							<img
+								src={`${bngBaseUrl}${character.emblemPath}`}
+								alt={`Transfer to ${ClassType[character.classType]}`}
+								class="w-full h-full object-cover"
+							/>
+							<span class="sr-only">Transfer to {ClassType[character.classType]}</span>
+						</Button>
+					</TooltipTrigger>
+					<TooltipContent>
+						<p>Transfer to {ClassType[character.classType]}</p>
+					</TooltipContent>
+				</Tooltip>
 			{/each}
 		</div>
 	</div>
