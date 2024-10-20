@@ -4,10 +4,9 @@
 	import { Card, CardContent } from '$lib/components/ui/card';
 	import { ClassType, RaceType, STAT_ORDER } from '$lib/utils/types';
 	import type { Character, DestinyStatDefinition } from '$lib/utils/types';
-	
-
+	//props
 	let { character } = $props<{ character: Character }>();
-
+	//state
 	let statDefinitions: Record<string, DestinyStatDefinition> = $state({});
 
 	$effect(() => {

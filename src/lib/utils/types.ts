@@ -56,7 +56,6 @@ export interface UserData {
 	destinyMemberships: DestinyMembership[];
 }
 
-
 // profileData
 export interface ProfileData {
 	characters: Character[];

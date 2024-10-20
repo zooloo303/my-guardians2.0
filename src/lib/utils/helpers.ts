@@ -9,6 +9,7 @@ export const membershipTypes: Record<MembershipType, string> = {
 	[MembershipType.Stadia]: 'Stadia'
 };
 export const bngBaseUrl = 'https://www.bungie.net';
+export const itemPlaceHolder = 2166136261;
 
 export const manifestTables = [
 	'DestinyClassDefinition',
