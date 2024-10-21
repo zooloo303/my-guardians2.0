@@ -94,7 +94,7 @@
 							variant="ghost"
 							size="icon"
 							disabled={!canEquip(character as Character)}
-							on:click={() => handleEquip(character as Character)}
+							onclick={() => handleEquip(character as Character)}
 							class="relative p-0 h-8 w-8 overflow-hidden"
 						>
 							<img
@@ -123,7 +123,7 @@
 							variant="ghost"
 							size="icon"
 							disabled={!canTransfer(character as Character)}
-							on:click={() => handleTransfer(character as Character)}
+							onclick={() => handleTransfer(character as Character)}
 							class="relative p-0 h-8 w-8 overflow-hidden"
 						>
 							<img
