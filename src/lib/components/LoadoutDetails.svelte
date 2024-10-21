@@ -193,22 +193,22 @@
 		<Dialog.Footer>
 			<Button onclick={handleEquipLoadout} variant="default">Equip Loadout</Button>
 			<ProgressButton 
-			  onclick={handleSnapshotLoadout} 
-			  variant="default" 
-			  duration={1000}
+				on:completehold={handleSnapshotLoadout} 
+				variant="default" 
+				duration={1000}
 			>
-			  Overwrite Loadout
+				Overwrite Loadout
 			</ProgressButton>
 			<ProgressButton 
-			  onclick={handleClearLoadout} 
-			  variant="destructive"
-			  duration={2000} 
-			  >
-			  Clear Loadout
+				on:completehold={handleClearLoadout} 
+				variant="destructive"
+				duration={2000} 
+			>
+				Clear Loadout
 			</ProgressButton>
 			<Dialog.Close>
-			  <Button variant="outline">Close</Button>
+				<Button variant="outline">Close</Button>
 			</Dialog.Close>
-		  </Dialog.Footer>
+		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>

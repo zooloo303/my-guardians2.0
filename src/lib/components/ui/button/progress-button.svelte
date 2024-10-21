@@ -4,11 +4,14 @@
 	import { cn } from "$lib/utils.js";
 	import { tweened } from 'svelte/motion';
 	import { cubicOut } from 'svelte/easing';
+	import { createEventDispatcher } from 'svelte';
 
 	type $$Props = import('./index.js').Props & {
 		duration?: number;
 	};
-	type $$Events = import('./index.js').Events;
+	type $$Events = import('./index.js').Events & {
+		completehold: CustomEvent<void>;
+	};
 
 	let className: $$Props["class"] = undefined;
 	export let variant: $$Props["variant"] = "default";
@@ -16,6 +19,8 @@
 	export let builders: $$Props["builders"] = [];
 	export let duration = 1500; // Default duration of 1.5 seconds
 	export { className as class };
+
+	const dispatch = createEventDispatcher<$$Events>();
 
 	let progress = tweened(0, {
 		duration,
@@ -34,8 +39,7 @@
 	}
 
 	$: if ($progress === 100 && isHolding) {
-		const event = new CustomEvent('click');
-		dispatchEvent(event);
+		dispatch('completehold');
 		isHolding = false;
 	}
 </script>
