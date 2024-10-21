@@ -49,6 +49,12 @@ export function getUniqueInventoryItems(profileData: ProfileData): InventoryItem
   return uniqueItemsWithComponents;
 }
 
+export function findItemHashByInstanceId(profileData: ProfileData, itemInstanceId: string): number | undefined {
+  const allItems = getUniqueInventoryItems(profileData);
+  const item = allItems.find(item => item.itemInstanceId === itemInstanceId);
+  return item ? item.itemHash : undefined;
+}
+
 export function findItemInInventory(
   inventoryData: CompleteInventoryResponse | null,
   itemInstanceId: string,
@@ -62,7 +68,6 @@ export function findItemInInventory(
   if (vaultItem) {
     return { item: vaultItem, location: "vault" };
   }
-
   // Check character inventories and equipment
   for (const [characterId, inventory] of Object.entries(
     inventoryData.characterInventories,
@@ -74,7 +79,6 @@ export function findItemInInventory(
       return { item: inventoryItem, location: characterId };
     }
   }
-
   for (const [characterId, equipment] of Object.entries(
     inventoryData.characterEquipment,
   )) {
@@ -85,112 +89,5 @@ export function findItemInInventory(
       return { item: equipmentItem, location: characterId };
     }
   }
-
   return undefined;
 }
-
-// export function groupItemsBy<T, K extends string | number>(
-//   items: T[],
-//   keyFn: (item: T) => K,
-// ): Record<K, T[]> {
-//   return items.reduce(
-//     (acc, item) => {
-//       const key = keyFn(item);
-//       if (!acc[key]) {
-//         acc[key] = [];
-//       }
-//       acc[key].push(item);
-//       return acc;
-//     },
-//     {} as Record<K, T[]>,
-//   );
-// }
-
-// export function getLegendaryArmorForClass(
-//   inventoryData: CompleteInventoryResponse,
-//   classType: number,
-//   manifestData: Record<string, DestinyInventoryItemDefinition>,
-// ): SlimArmorPiece[] {
-//   const result: SlimArmorPiece[] = [];
-
-//   // Iterate through all inventory locations
-//   const inventoryLocations = [
-//     inventoryData.profileInventory,
-//     ...Object.values(inventoryData.characterInventories),
-//     ...Object.values(inventoryData.characterEquipment),
-//   ];
-
-//   for (const location of inventoryLocations) {
-//     for (const item of location.items) {
-//       const itemDef = manifestData[item.itemHash];
-
-//       // Check if the item is legendary armor for the specified class
-//       if (
-//         itemDef &&
-//         itemDef.itemType === 2 && // Armor
-//         itemDef.inventory?.tierType === 5 && // Legendary
-//         itemDef.classType === classType
-//       ) {
-//         const itemInstance =
-//           inventoryData.itemComponents.instances.data[item.itemInstanceId];
-//         const itemStats =
-//           inventoryData.itemComponents.stats.data[item.itemInstanceId]?.stats;
-
-//         if (itemInstance && itemStats) {
-//           result.push({
-//             itemHash: item.itemHash.toString(),
-//             itemInstanceId: item.itemInstanceId,
-//             name: itemDef.displayProperties.name,
-//             itemTypeDisplayName: itemDef.itemTypeDisplayName,
-//             stats: itemStats,
-//           });
-//         }
-//       }
-//     }
-//   }
-
-//   return result;
-// }
-
-// export function getArmorMods(): InventoryItem[] {
-//   const manifestData = get(manifestStore).tables
-//     .DestinyInventoryItemDefinition as Record<
-//     string,
-//     DestinyInventoryItemDefinition
-//   >;
-
-//   return Object.values(manifestData)
-//     .filter(item => 
-//       item.itemType === 19 && 
-//       item.itemTypeDisplayName === "General Armor Mod" &&
-//       item.itemCategoryHashes.includes(4104513227)
-//     )
-//     .map(item => ({
-//       itemHash: item.hash,
-//       name: item.displayProperties.name,
-//       description: item.displayProperties.description,
-//       icon: item.displayProperties.icon,
-//       stats: item.investmentStats
-//     }));
-// }
-
-// export function getSubclassFragments(itemTypeDisplayName: string) {
-//   console.log(`getSubclassFragments called with itemTypeDisplayName:`, itemTypeDisplayName);
-//   const manifestData = get(manifestStore).tables
-//     .DestinyInventoryItemDefinition as Record<
-//     string,
-//     DestinyInventoryItemDefinition
-//   >;
-
-//   return Object.values(manifestData)
-//     .filter(item => 
-//       item.itemTypeDisplayName === itemTypeDisplayName 
-//     )
-//     .map(item => ({
-//       itemHash: item.hash,
-//       name: item.displayProperties.name,
-//       description: item.displayProperties.description,
-//       icon: item.displayProperties.icon,
-//       stats: item.investmentStats
-//     }));
-// }

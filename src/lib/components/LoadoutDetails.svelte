@@ -1,16 +1,19 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import Item from '$lib/components/Item.svelte';
-	import { bngBaseUrl } from '$lib/utils/helpers';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { getManifestData } from '$lib/utils/indexedDB';
+	import { bngBaseUrl, findItemInInventory } from '$lib/utils/helpers';
 	import { equipLoadout, clearLoadout } from '$lib/utils/loadoutActions';
 	import type {
 		Loadout,
+		LoadoutItem,
 		Character,
 		DestinyLoadoutColorDefinition,
 		DestinyLoadoutIconDefinition,
 		DestinyLoadoutNameDefinition,
+        LoadoutItemWithComponents,
 		DestinyInventoryItemDefinition
 	} from '$lib/utils/types';
 
@@ -26,12 +29,18 @@
 		open: boolean;
 	}>();
 
-	let loadoutDetails = $state({
-		color: '',
-		icon: '',
-		name: '',
-		items: []
-	});
+	let loadoutDetails = $state<{
+  color: string;
+  icon: string;
+  name: string;
+  items: LoadoutItemWithComponents[];
+}>({
+  color: '',
+  icon: '',
+  name: '',
+  items: []
+});
+	let inventoryData = $derived($page.data.profileData.inventoryData);
 
 	$effect(() => {
 		async function fetchLoadoutDetails() {
@@ -49,18 +58,28 @@
 					loadout.nameHash
 				)
 			]);
-
 			const itemDetails = await Promise.all(
-				loadout.items.map(async (item) => {
-					const itemDef = await getManifestData<DestinyInventoryItemDefinition>(
-						'DestinyInventoryItemDefinition',
-						item.itemInstanceId
-					);
-					return {
-						...item,
-						name: itemDef?.displayProperties.name,
-						icon: itemDef?.displayProperties.icon
-					};
+				loadout.items.map(async (loadoutItem: LoadoutItem) => {
+					const foundItem = findItemInInventory(inventoryData, loadoutItem.itemInstanceId);
+					if (foundItem && foundItem.item.itemHash) {
+						const itemDef = await getManifestData<DestinyInventoryItemDefinition>(
+							'DestinyInventoryItemDefinition',
+							foundItem.item.itemHash
+						);
+						return {
+							...foundItem,
+							instance: inventoryData.itemComponents.instances.data[loadoutItem.itemInstanceId],
+							stats: inventoryData.itemComponents.stats.data[loadoutItem.itemInstanceId]?.stats,
+							sockets: inventoryData.itemComponents.sockets.data[loadoutItem.itemInstanceId],
+							itemHash: foundItem.item.itemHash,
+                            displayItemHash: foundItem.item.itemHash,
+							plugItemHashes: loadoutItem.plugItemHashes,
+							name: itemDef?.displayProperties.name,
+							icon: itemDef?.displayProperties.icon
+						};
+					}
+					console.warn('Item not found in inventory:', loadoutItem);
+					return loadoutItem; 
 				})
 			);
 
