@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { toast } from 'svelte-sonner';
     import { bngBaseUrl } from '$lib/utils/helpers';
 	import { ClassType, RaceType } from '$lib/utils/types';
     import type { Character, Loadout } from '$lib/utils/types';

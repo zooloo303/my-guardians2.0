@@ -63,14 +63,18 @@
 
 	async function handleAddLoadout(characterId: string, index: number) {
 		const character = characters[characterId];
+		let loadoutIndex = index;
+		let colorHash = DEFAULT_COLOR_HASH;
+		let iconHash = DEFAULT_ICON_HASH;
+		let nameHash = DEFAULT_NAME_HASH;
 		try {
 			await snapshotLoadout(
+				loadoutIndex,
 				character.characterId,
 				character.membershipType,
-				index,
-				DEFAULT_COLOR_HASH,
-				DEFAULT_ICON_HASH,
-				DEFAULT_NAME_HASH
+				colorHash,
+				iconHash,
+				nameHash
 			);
 			toast.success('New loadout created successfully');
 		} catch (error) {

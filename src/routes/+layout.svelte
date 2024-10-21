@@ -7,6 +7,10 @@
 	import { Progress } from '$lib/components/ui/progress';
 	import type { UserData, ProfileData } from '$lib/utils/types';
 	import { storeManifestData, getManifestVersion } from '$lib/utils/indexedDB';
+	import { setNavContext } from '$lib/utils/navContext';
+	import { page } from '$app/stores';
+
+	setNavContext($page.url.pathname);
 
 	let isUpdatingManifest = $state(false);
 	let progress = $state(0);
