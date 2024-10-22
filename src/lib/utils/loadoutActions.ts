@@ -1,4 +1,5 @@
 import { toast } from "svelte-sonner";
+import { refreshProfileData } from './dataRefresh';
 import type {
   DestinyLoadoutActionRequest,
   DestinyLoadoutUpdateActionRequest,
@@ -60,6 +61,7 @@ export async function clearLoadout(
     }
 
     toast.success("Loadout cleared successfully");
+    await refreshProfileData();
   } catch (error) {
     console.error("Error clearing loadout:", error);
     toast.error("Failed to clear loadout");
@@ -97,6 +99,7 @@ export async function snapshotLoadout(
     }
 
     toast.success("Loadout snapshotted successfully");
+    await refreshProfileData();
   } catch (error) {
     console.error("Error snapshotting loadout:", error);
     toast.error("Failed to snapshot loadout");
@@ -134,6 +137,7 @@ export async function updateLoadoutIdentifiers(
     }
 
     toast.success("Loadout identifiers updated successfully");
+    await refreshProfileData();
   } catch (error) {
     console.error("Error updating loadout identifiers:", error);
     toast.error("Failed to update loadout identifiers");

@@ -9,6 +9,7 @@
 	import { storeManifestData, getManifestVersion } from '$lib/utils/indexedDB';
 	import { setNavContext } from '$lib/utils/navContext';
 	import { page } from '$app/stores';
+	import DataRefreshManager from '$lib/components/DataRefreshManager.svelte';
 
 	setNavContext($page.url.pathname);
 
@@ -56,6 +57,7 @@
 <ModeWatcher />
 <Header {user} />
 <Toaster />
+<DataRefreshManager />
 
 {#if isUpdatingManifest}
 	<div class="fixed bottom-0 left-0 right-0 z-50 bg-background/80 p-4 backdrop-blur-sm">

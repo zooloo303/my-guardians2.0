@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { LogOut } from 'lucide-svelte';
+	import { LogOut, RefreshCw } from 'lucide-svelte';
 	import Auth from '$lib/components/Auth.svelte';
 	import { bngBaseUrl } from '$lib/utils/helpers';
 	import type { UserData } from '$lib/utils/types';
@@ -9,6 +9,7 @@
 	import MembershipCard from '$lib/components/MembershipCard.svelte';
 	import { Popover, PopoverTrigger, PopoverContent } from '$lib/components/ui/popover';
 	import { Avatar, AvatarImage, AvatarFallback } from '$lib/components/ui/avatar';
+	import { refreshProfileData } from '$lib/utils/dataRefresh';
 
 	
 	// Props
@@ -21,6 +22,10 @@
 		} else {
 			console.error('Logout failed');
 		}
+	}
+
+	function handleRefresh() {
+		refreshProfileData();
 	}
 </script>
 
@@ -50,6 +55,9 @@
 				<Button variant="outline" onclick={logout}>
 					<LogOut class="mr-2 h-4 w-4" />
 					Log out
+				</Button>
+				<Button onclick={handleRefresh} variant="ghost" size="icon">
+					<RefreshCw class="h-[1.2rem] w-[1.2rem]" />
 				</Button>
 			</div>
 		{:else}
