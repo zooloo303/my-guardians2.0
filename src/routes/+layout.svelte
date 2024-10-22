@@ -1,16 +1,16 @@
 <script lang="ts">
 	import '../app.css';
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	import { ModeWatcher } from 'mode-watcher';
 	import Header from '$lib/components/Header.svelte';
 	import { Toaster } from '$lib/components/ui/sonner';
+	import { setNavContext } from '$lib/utils/navContext';
 	import { Progress } from '$lib/components/ui/progress';
 	import type { UserData, ProfileData } from '$lib/utils/types';
-	import { storeManifestData, getManifestVersion } from '$lib/utils/indexedDB';
-	import { setNavContext } from '$lib/utils/navContext';
-	import { page } from '$app/stores';
 	import DataRefreshManager from '$lib/components/DataRefreshManager.svelte';
-
+	import { storeManifestData, getManifestVersion } from '$lib/utils/indexedDB';
+	
 	setNavContext($page.url.pathname);
 
 	let isUpdatingManifest = $state(false);

@@ -1,19 +1,18 @@
 <script lang="ts">
-	import { LogOut, RefreshCw } from 'lucide-svelte';
 	import Auth from '$lib/components/Auth.svelte';
 	import { bngBaseUrl } from '$lib/utils/helpers';
 	import type { UserData } from '$lib/utils/types';
+	import { LogOut, RefreshCw } from 'lucide-svelte';
 	import NavTab from '$lib/components/NavTab.svelte';
 	import { Button } from '$lib/components/ui/button';
+	import { refreshProfileData } from '$lib/utils/dataRefresh';
 	import LightSwitch from '$lib/components/LightSwitch.svelte';
 	import MembershipCard from '$lib/components/MembershipCard.svelte';
-	import { Popover, PopoverTrigger, PopoverContent } from '$lib/components/ui/popover';
 	import { Avatar, AvatarImage, AvatarFallback } from '$lib/components/ui/avatar';
-	import { refreshProfileData } from '$lib/utils/dataRefresh';
-
-	
+	import { Popover, PopoverTrigger, PopoverContent } from '$lib/components/ui/popover';
 	// Props
 	let { user } = $props<{ user: UserData | null }>();
+	let isLoading = $state(false);
 
 	async function logout() {
 		const response = await fetch('/api/auth/logout', { method: 'POST' });
@@ -24,8 +23,13 @@
 		}
 	}
 
-	function handleRefresh() {
-		refreshProfileData();
+	async function handleRefresh() {
+		isLoading = true;
+		try {
+			await refreshProfileData();
+		} finally {
+			isLoading = false;
+		}
 	}
 </script>
 
@@ -40,10 +44,15 @@
 			<div class="flex items-center space-x-4">
 				<Popover>
 					<PopoverTrigger>
-						<div class="flex items-center space-x-2 cursor-pointer">
+						<div class="flex cursor-pointer items-center space-x-2">
 							<Avatar>
-								<AvatarImage src={`${bngBaseUrl}${user.bungieNetUser.profilePicturePath}`} alt={user.bungieNetUser.displayName} />
-								<AvatarFallback>{user.bungieNetUser.displayName.slice(0, 2).toUpperCase()}</AvatarFallback>
+								<AvatarImage
+									src={`${bngBaseUrl}${user.bungieNetUser.profilePicturePath}`}
+									alt={user.bungieNetUser.displayName}
+								/>
+								<AvatarFallback
+									>{user.bungieNetUser.displayName.slice(0, 2).toUpperCase()}</AvatarFallback
+								>
 							</Avatar>
 							<span class="text-sm font-medium">{user.bungieNetUser.displayName}</span>
 						</div>
@@ -56,8 +65,12 @@
 					<LogOut class="mr-2 h-4 w-4" />
 					Log out
 				</Button>
-				<Button onclick={handleRefresh} variant="ghost" size="icon">
-					<RefreshCw class="h-[1.2rem] w-[1.2rem]" />
+				<Button onclick={handleRefresh} variant="ghost" size="icon" disabled={isLoading}>
+					{#if isLoading}
+						<RefreshCw class="h-[1.2rem] w-[1.2rem] animate-spin" />
+					{:else}
+						<RefreshCw class="h-[1.2rem] w-[1.2rem]" />
+					{/if}
 				</Button>
 			</div>
 		{:else}
