@@ -78,3 +78,22 @@ export async function getManifestData<T>(table: string, hash: number): Promise<T
 		request.onsuccess = () => resolve(request.result as T | undefined);
 	});
 }
+
+export async function getManifestTable<T>(table: string): Promise<Record<number, T>> {
+	const db = await openDatabase();
+	const transaction = db.transaction(table, 'readonly');
+	const objectStore = transaction.objectStore(table);
+  
+	return new Promise((resolve, reject) => {
+	  const request = objectStore.getAll();
+	  request.onerror = () => reject(request.error);
+	  request.onsuccess = () => {
+		const result: Record<number, T> = {};
+		request.result.forEach((item: T & { hash: number }) => {
+		  result[item.hash] = item;
+		});
+		resolve(result);
+	  };
+	});
+  }
+  

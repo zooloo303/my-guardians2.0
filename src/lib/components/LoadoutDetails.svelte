@@ -5,6 +5,7 @@
 	import { getManifestData } from '$lib/utils/indexedDB';
 	import { Button, ProgressButton } from '$lib/components/ui/button';
 	import { bngBaseUrl, findItemInInventory } from '$lib/utils/helpers';
+	import LoadoutIdentifierUpdate from '$lib/components/LoadoutIdentifierUpdate.svelte';
     import { Tooltip, TooltipTrigger, TooltipContent } from '$lib/components/ui/tooltip';
 	import { equipLoadout, clearLoadout, snapshotLoadout } from '$lib/utils/loadoutActions';
 	import type {
@@ -46,6 +47,7 @@
 		items: [],
 		plugItemDefinitions: {}
 	});
+	let identifierUpdateOpen = $state(false);
 	let inventoryData = $derived($page.data.profileData.inventoryData);
 
 	$effect(() => {
@@ -199,6 +201,8 @@
 			>
 				Overwrite Loadout
 			</ProgressButton>
+			<Button onclick={() => identifierUpdateOpen = true} variant="outline">Update Identifiers</Button>
+  
 			<ProgressButton 
 				on:completehold={handleClearLoadout} 
 				variant="destructive"
@@ -212,3 +216,10 @@
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>
+
+<LoadoutIdentifierUpdate
+  {loadout}
+  {loadoutIndex}
+  {character}
+  bind:open={identifierUpdateOpen}
+/>
