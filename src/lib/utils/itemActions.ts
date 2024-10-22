@@ -1,4 +1,5 @@
 import { toast } from "svelte-sonner";
+import { refreshProfileData } from './dataRefresh';
 import type {
   DestinyItemActionRequest,
   DestinyItemTransferRequest,
@@ -32,10 +33,11 @@ export async function equipItem(
 
     const data = await response.json();
     toast.success("Item equipped successfully");
+    await refreshProfileData();
     return data;
   } catch (error) {
     console.error("Error equipping item:", error);
-    toast.error(`Failed to equip item: ${error.message}`);
+    toast.error("Failed to equip item");
     throw error;
   }
 }
@@ -73,10 +75,11 @@ export async function transferItem(
 
     const data = await response.json();
     toast.success("Item transferred successfully");
+    await refreshProfileData();
     return data;
   } catch (error) {
     console.error("Error transferring item:", error);
-    toast.error(`${error.message}`);
+    toast.error("Failed to transfer item");
     throw error;
   }
 }
@@ -108,10 +111,11 @@ export async function equipItems(
 
     const data = await response.json();
     toast.success("Items equipped successfully");
+    await refreshProfileData();
     return data;
   } catch (error) {
     console.error("Error equipping items:", error);
-    toast.error(`${error.message}`);
+    toast.error("Failed to equip items");
     throw error;
   }
 }
