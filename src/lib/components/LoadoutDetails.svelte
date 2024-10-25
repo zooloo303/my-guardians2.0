@@ -196,7 +196,7 @@
 			<Button onclick={handleEquipLoadout} variant="default">Equip Loadout</Button>
 			<ProgressButton 
 				on:completehold={handleSnapshotLoadout} 
-				variant="default" 
+				class="bg-blue-500 hover:bg-blue-600"
 				duration={1000}
 			>
 				Overwrite Loadout
