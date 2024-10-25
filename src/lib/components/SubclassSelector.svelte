@@ -1,5 +1,6 @@
 <script lang="ts">
     import { Button } from '$lib/components/ui/button';
+    import { Tooltip, TooltipTrigger, TooltipContent } from '$lib/components/ui/tooltip';
     import type { Character } from '$lib/utils/types';
     import { bngBaseUrl, warlockSubclasses, hunterSubclasses, titanSubclasses  } from '$lib/utils/helpers';
     import { getManifestData } from '$lib/utils/indexedDB';
@@ -54,17 +55,23 @@
     function handleSelect(subclassHash: number) {
         onSelect(subclassHash.toString());
     }
-    </script>
+</script>
     
-    <div class="flex flex-wrap gap-4 justify-center">
-        {#each subclasses as subclass (subclass.hash)}
-            <Button
-                variant="ghost"
-                class="flex flex-col items-center p-2"
-                on:click={() => handleSelect(subclass.hash)}
-            >
-                <img src={bngBaseUrl + subclass.icon} alt={subclass.name} class="w-12 h-12 mb-2" />
-                <span class="text-sm font-semibold">{subclass.name}</span>
-            </Button>
-        {/each}
-    </div>
+<div class="flex flex-wrap gap-4 justify-center">
+    {#each subclasses as subclass (subclass.hash)}
+        <Tooltip>
+            <TooltipTrigger>
+                <Button
+                    variant="ghost"
+                    class="flex flex-col items-center p-2"
+                    onclick={() => handleSelect(subclass.hash)}
+                >
+                    <img src={bngBaseUrl + subclass.icon} alt={subclass.name} class="w-12 h-12" />
+                </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+                <p>{subclass.name}</p>
+            </TooltipContent>
+        </Tooltip>
+    {/each}
+</div>

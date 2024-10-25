@@ -127,8 +127,7 @@ export async function getArmorForClass(
 	classType: number,
 	tierType: number
 ): Promise<ArmorPiece[]> {
-	console.log('getArmorForClass inputs:', { classType, tierType });
-
+  
 	const result: ArmorPiece[] = [];
 
 	const inventoryLocations = [
@@ -178,9 +177,6 @@ export async function getArmorForClass(
 			}
 		}
 	}
-
-	console.log('getArmorForClass result:', result);
-
 	return result;
 }
 

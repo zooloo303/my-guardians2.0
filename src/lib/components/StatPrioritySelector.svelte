@@ -55,15 +55,15 @@
     }
     </script>
     
-    <div>
+    <div class="flex justify-center w-full">
       <section
         use:dndzone="{{ items, flipDurationMs }}"
         onconsider={handleConsider}
         onfinalize={handleFinalize}
-        class="flex flex-col space-y-2"
+        class="flex flex-col space-y-2 w-[300px]"
       >
         {#each items as item (item.id)}
-          <div class="flex items-center space-x-2 p-2 bg-secondary rounded-md cursor-move" animate:flip="{{ duration: flipDurationMs }}">
+          <div class="flex items-center justify-center space-x-2 p-2 bg-secondary rounded-md cursor-move" animate:flip="{{ duration: flipDurationMs }}">
             {#if statDefinitions[item.hash]}
               <img 
                 src={`${bngBaseUrl}${statDefinitions[item.hash].displayProperties.icon}`} 
