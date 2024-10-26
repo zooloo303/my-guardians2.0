@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { bngBaseUrl } from '$lib/utils/helpers';
     import Item from '$lib/components/Item.svelte';
+    import { bngBaseUrl } from '$lib/utils/helpers';
     import { Button } from '$lib/components/ui/button';
     import { Tooltip, TooltipTrigger, TooltipContent } from '$lib/components/ui/tooltip';
     import type { ArmorPiece, DestinyInventoryItemDefinition } from '$lib/utils/types';
@@ -10,12 +10,22 @@
             armorPieces: ArmorPiece[];
             mods: DestinyInventoryItemDefinition[];
             fragments: DestinyInventoryItemDefinition[];
+            finalStats: { [statHash: string]: number };
         };
     }>();
     
     const statOrder = ['Mobility', 'Resilience', 'Recovery', 'Discipline', 'Intellect', 'Strength'];
     
     function calculateTotalStats() {
+        const statHashes = {
+            Mobility: '2996146975',
+            Resilience: '392767087',
+            Recovery: '1943323491',
+            Discipline: '1735777505',
+            Intellect: '144602215',
+            Strength: '4244567218'
+        };
+
         const totalStats = {
             Mobility: 0,
             Resilience: 0,
@@ -24,13 +34,29 @@
             Intellect: 0,
             Strength: 0
         };
-    
+
+        // Sum up base stats from armor pieces
         result.armorPieces.forEach(piece => {
-            Object.entries(piece.stats).forEach(([statName, statValue]) => {
-                totalStats[statName] += statValue.value;
+            Object.entries(piece.stats).forEach(([statHash, statValue]) => {
+                // Find which stat this hash corresponds to
+                for (const [statName, hash] of Object.entries(statHashes)) {
+                    if (statHash === hash) {
+                        totalStats[statName] += statValue.value;
+                    }
+                }
             });
         });
-    
+
+        // Add stats from mods and fragments
+        for (const [statHash, value] of Object.entries(result.finalStats || {})) {
+            for (const [statName, hash] of Object.entries(statHashes)) {
+                if (statHash === hash) {
+                    totalStats[statName] = value;
+                }
+            }
+        }
+
+        console.log('Calculated total stats:', totalStats);
         return totalStats;
     }
     

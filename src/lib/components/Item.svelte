@@ -4,7 +4,6 @@
 	import { Card, CardContent } from '$lib/components/ui/card';
 	import ItemHoverCard from '$lib/components/ItemHoverCard.svelte';
 	import type {
-		SUBCLASS_BUCKET_HASH,
 		InventoryItemWithComponents,
 		DestinyInventoryItemDefinition,
 		DestinyDamageTypeDefinition
@@ -22,10 +21,13 @@
 
 	$effect(() => {
 		async function fetchData() {
+			// Ensure we're using the correct hash for display
+			const displayHash = item.overrideStyleItemHash || item.itemHash;
+
 			const [itemDef, damageDef] = await Promise.all([
 				getManifestData<DestinyInventoryItemDefinition>(
 					'DestinyInventoryItemDefinition',
-					item.displayItemHash
+					displayHash
 				),
 				item.instance?.damageTypeHash
 					? getManifestData<DestinyDamageTypeDefinition>(

@@ -226,16 +226,41 @@ export function getSubclassFragmentType(subclassHash: string): string {
 }
 
 export async function getSubclassFragments(
-	subclassHash: string
+  subclassHash: string
 ): Promise<DestinyInventoryItemDefinition[]> {
-	const fragmentType = getSubclassFragmentType(subclassHash);
-	const table = await getManifestTable<DestinyInventoryItemDefinition>(
-		'DestinyInventoryItemDefinition'
-	);
+  console.log('Getting fragments for subclass hash:', subclassHash);
+  
+  const fragmentType = getSubclassFragmentType(subclassHash);
+  console.log('Fragment type:', fragmentType);
+  
+  const table = await getManifestTable<DestinyInventoryItemDefinition>(
+    'DestinyInventoryItemDefinition'
+  );
 
-	return Object.values(table).filter(
-		(item) =>
-			item.itemType === 19 && // Mod
-			item.itemTypeDisplayName === fragmentType
-	);
+  const fragments = Object.values(table).filter(item => {
+    const isModType = item.itemType === 19;
+    const hasCorrectName = item.itemTypeDisplayName === fragmentType;
+    const hasValidStats = item.investmentStats?.some(stat => 
+      stat.isConditionallyActive && stat.value !== 0
+    );
+
+    if (hasCorrectName) {
+      console.log('Found potential fragment:', {
+        name: item.displayProperties.name,
+        isModType,
+        hasCorrectName,
+        hasValidStats,
+        stats: item.investmentStats?.filter(stat => stat.isConditionallyActive)
+      });
+    }
+
+    return isModType && hasCorrectName && hasValidStats;
+  });
+
+  console.log('Found fragments:', fragments.map(f => ({
+    name: f.displayProperties.name,
+    stats: f.investmentStats?.filter(stat => stat.isConditionallyActive)
+  })));
+  
+  return fragments;
 }
