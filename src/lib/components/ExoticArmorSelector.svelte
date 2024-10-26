@@ -1,17 +1,17 @@
 <script lang="ts">
     import { page } from '$app/stores';
     import { Button } from '$lib/components/ui/button';
-    import type { Character, ArmorPiece } from '$lib/utils/types';
-    import { bngBaseUrl, getArmorForClass } from '$lib/utils/helpers';
     import * as Drawer from '$lib/components/ui/drawer';
-
+    import { bngBaseUrl, getArmorForClass } from '$lib/utils/helpers';
+    import type { Character, InventoryItemWithComponents, DestinyInventoryItemDefinition } from '$lib/utils/types';
+    
     let { character, onSelect } = $props<{
         character: Character;
-        onSelect: (exotic: ArmorPiece) => void;
+        onSelect: (exotic: InventoryItemWithComponents) => void;
     }>();
 
-    let exoticArmor = $state<ArmorPiece[]>([]);
-    let selectedExotic = $state<ArmorPiece | null>(null);
+    let exoticArmor = $state<InventoryItemWithComponents[]>([]);
+    let selectedExotic = $state<InventoryItemWithComponents | null>(null);
     let isDrawerOpen = $state(false);
 
     $effect(() => {
@@ -23,7 +23,7 @@
         exoticArmor = await getArmorForClass(inventoryData, character.classType, 6);
     }
 
-    function handleSelect(exotic: ArmorPiece) {
+    function handleSelect(exotic: InventoryItemWithComponents) {
         selectedExotic = exotic;
         onSelect(exotic);
         isDrawerOpen = false;

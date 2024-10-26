@@ -5,8 +5,7 @@ import type {
 	InventoryItem,
 	InventoryItemWithComponents,
 	CompleteInventoryResponse,
-	DestinyInventoryItemDefinition,
-	ArmorPiece
+	DestinyInventoryItemDefinition
 } from './types';
 
 export const membershipTypes: Record<MembershipType, string> = {
@@ -126,9 +125,9 @@ export async function getArmorForClass(
 	inventoryData: CompleteInventoryResponse,
 	classType: number,
 	tierType: number
-): Promise<ArmorPiece[]> {
+): Promise<InventoryItemWithComponents[]> {
   
-	const result: ArmorPiece[] = [];
+	const result: InventoryItemWithComponents[] = [];
 
 	const inventoryLocations = [
 		inventoryData.profileInventory,

@@ -327,22 +327,7 @@ export interface SearchCriteria {
 	classType: { value: ClassType; label: string } | null; // Changed from bucketType to classType
 	tierType: { value: TierType; label: string } | null;
 }
-export interface ArmorPiece {
-	itemHash: number;
-	itemInstanceId: string;
-	name: string;
-	icon: string;
-	itemTypeDisplayName: string;
-	stats: ItemStats;
-	tierType?: number;
-  }
-  
-//   export interface ModsAndFragments {
-// 	itemHash: number;
-// 	name: string;
-// 	description: string;
-// 	investmentStats: [number, number, boolean][];
-//   }
+
 // enum types
 export enum MembershipType {
 	Xbox = 1,

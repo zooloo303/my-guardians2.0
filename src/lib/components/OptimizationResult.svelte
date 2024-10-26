@@ -3,11 +3,11 @@
     import { bngBaseUrl } from '$lib/utils/helpers';
     import { Button } from '$lib/components/ui/button';
     import { Tooltip, TooltipTrigger, TooltipContent } from '$lib/components/ui/tooltip';
-    import type { ArmorPiece, DestinyInventoryItemDefinition } from '$lib/utils/types';
+    import type { InventoryItemWithComponents, DestinyInventoryItemDefinition } from '$lib/utils/types';
     
     let { result } = $props<{
         result: {
-            armorPieces: ArmorPiece[];
+            armorPieces: InventoryItemWithComponents[];
             mods: DestinyInventoryItemDefinition[];
             fragments: DestinyInventoryItemDefinition[];
             finalStats: { [statHash: string]: number };
@@ -69,9 +69,9 @@
         <h2 class="text-2xl font-bold">Optimized Armor Set</h2>
     
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {#each result.armorPieces as armorPiece}
+            {#each result.armorPieces as InventoryItemWithComponents}
                 <div class="bg-secondary/50 rounded-lg p-4">
-                    <Item item={armorPiece} />
+                    <Item item={InventoryItemWithComponents} />
                 </div>
             {/each}
         </div>
