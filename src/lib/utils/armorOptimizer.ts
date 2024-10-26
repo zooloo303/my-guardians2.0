@@ -1,11 +1,11 @@
-import type { InventoryItemWithComponents, DestinyInventoryItemDefinition, CompleteInventoryResponse } from './types';
+import type { LoadoutItemWithComponents, DestinyInventoryItemDefinition, CompleteInventoryResponse } from './types';
 import { getArmorForClass, getArmorMods, getSubclassFragments } from './helpers';
 
 interface StatTotal {
   [statHash: string]: number;
 }
 
-function calculateBaseStats(armor: InventoryItemWithComponents[]): StatTotal {
+function calculateBaseStats(armor: LoadoutItemWithComponents[]): StatTotal {
   const totals: StatTotal = {};
   
   armor.forEach(piece => {
@@ -19,10 +19,10 @@ function calculateBaseStats(armor: InventoryItemWithComponents[]): StatTotal {
 }
 
 function findBestArmorForStat(
-  availableArmor: InventoryItemWithComponents[],
+  availableArmor: LoadoutItemWithComponents[],
   targetStatHash: string,
   excludeSlots: string[] = []
-): InventoryItemWithComponents | null {
+): LoadoutItemWithComponents | null {
   console.log(`Finding best armor for stat ${targetStatHash}. Excluded slots:`, excludeSlots);
   console.log('Available armor pieces:', availableArmor.length);
 
@@ -46,23 +46,23 @@ function findBestArmorForStat(
       return current;
     }
     return best;
-  }, null as InventoryItemWithComponents | null);
+  }, null as LoadoutItemWithComponents | null);
 
   console.log('Best piece found:', bestPiece?.name || 'None');
   return bestPiece;
 }
 
 function selectArmorSet(
-  availableArmor: InventoryItemWithComponents[],
-  exoticPiece: InventoryItemWithComponents,
+  availableArmor: LoadoutItemWithComponents[],
+  exoticPiece: LoadoutItemWithComponents,
   statPriorities: string[]
-): InventoryItemWithComponents[] {
+): LoadoutItemWithComponents[] {
   console.log('Starting armor set selection');
   console.log('Exotic piece:', exoticPiece.name);
   console.log('Stat priorities:', statPriorities);
   console.log('Available armor pieces:', availableArmor.length);
 
-  const selectedPieces: InventoryItemWithComponents[] = [exoticPiece];
+  const selectedPieces: LoadoutItemWithComponents[] = [exoticPiece];
   const excludeSlots = [exoticPiece.itemTypeDisplayName];
   
   for (const statHash of statPriorities) {
@@ -234,10 +234,10 @@ export async function optimizeArmor(
   inventoryData: CompleteInventoryResponse,
   characterClass: number,
   subclassHash: string,
-  exoticArmorPiece: InventoryItemWithComponents,
+  exoticArmorPiece: LoadoutItemWithComponents,
   statPriorities: string[]
 ): Promise<{
-  armorPieces: InventoryItemWithComponents[];
+  armorPieces: LoadoutItemWithComponents[];
   mods: DestinyInventoryItemDefinition[];
   fragments: DestinyInventoryItemDefinition[];
   finalStats: StatTotal;

@@ -3,11 +3,11 @@
     import { bngBaseUrl } from '$lib/utils/helpers';
     import { Button } from '$lib/components/ui/button';
     import { Tooltip, TooltipTrigger, TooltipContent } from '$lib/components/ui/tooltip';
-    import type { InventoryItemWithComponents, DestinyInventoryItemDefinition } from '$lib/utils/types';
+    import type { LoadoutItemWithComponents, DestinyInventoryItemDefinition } from '$lib/utils/types';
     
     let { result } = $props<{
         result: {
-            armorPieces: InventoryItemWithComponents[];
+            armorPieces: LoadoutItemWithComponents[];
             mods: DestinyInventoryItemDefinition[];
             fragments: DestinyInventoryItemDefinition[];
             finalStats: { [statHash: string]: number };
@@ -36,7 +36,7 @@
         };
 
         // Sum up base stats from armor pieces
-        result.armorPieces.forEach(piece => {
+        result.armorPieces.forEach((piece: LoadoutItemWithComponents) => {
             Object.entries(piece.stats).forEach(([statHash, statValue]) => {
                 // Find which stat this hash corresponds to
                 for (const [statName, hash] of Object.entries(statHashes)) {
@@ -69,9 +69,9 @@
         <h2 class="text-2xl font-bold">Optimized Armor Set</h2>
     
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {#each result.armorPieces as InventoryItemWithComponents}
+            {#each result.armorPieces as piece}
                 <div class="bg-secondary/50 rounded-lg p-4">
-                    <Item item={InventoryItemWithComponents} />
+                    <Item item={piece} />
                 </div>
             {/each}
         </div>

@@ -230,6 +230,7 @@ export interface LoadoutItemWithComponents extends InventoryItemWithComponents {
 	plugItemHashes: number[];
 	name?: string;
 	icon?: string;
+	itemTypeDisplayName?: string;
   }
 export interface DestinyLoadoutActionRequest {
 	loadoutIndex: number;

@@ -7,11 +7,11 @@ import CharacterSelector from '$lib/components/CharacterSelector.svelte';
 import OptimizationResult from '$lib/components/OptimizationResult.svelte';
 import ExoticArmorSelector from '$lib/components/ExoticArmorSelector.svelte';
 import StatPrioritySelector from '$lib/components/StatPrioritySelector.svelte';
-import type { Character, Loadout, InventoryItemWithComponents } from '$lib/utils/types';
+import type { Character, Loadout, LoadoutItemWithComponents } from '$lib/utils/types';
 
 let selectedCharacter = $state<Character | null>(null);
 let selectedSubclass = $state<string | null>(null);
-let selectedExotic = $state<InventoryItemWithComponents | null>(null);
+let selectedExotic = $state<LoadoutItemWithComponents | null>(null);
 let statPriority = $state<string[]>([]);
 let optimizationResult = $state<Loadout | null>(null);
 
@@ -33,7 +33,7 @@ function handleSubclassSelect(subclassHash: string) {
     optimizationResult = null;
 }
 
-function handleExoticSelect(exotic: InventoryItemWithComponents) {
+function handleExoticSelect(exotic: LoadoutItemWithComponents) {
     selectedExotic = exotic;
     statPriority = [];
     optimizationResult = null;

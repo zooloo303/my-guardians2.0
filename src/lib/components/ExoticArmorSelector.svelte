@@ -3,15 +3,15 @@
     import { Button } from '$lib/components/ui/button';
     import * as Drawer from '$lib/components/ui/drawer';
     import { bngBaseUrl, getArmorForClass } from '$lib/utils/helpers';
-    import type { Character, InventoryItemWithComponents, DestinyInventoryItemDefinition } from '$lib/utils/types';
+    import type { Character, LoadoutItemWithComponents } from '$lib/utils/types';
     
     let { character, onSelect } = $props<{
         character: Character;
-        onSelect: (exotic: InventoryItemWithComponents) => void;
+        onSelect: (exotic: LoadoutItemWithComponents) => void;
     }>();
 
-    let exoticArmor = $state<InventoryItemWithComponents[]>([]);
-    let selectedExotic = $state<InventoryItemWithComponents | null>(null);
+    let exoticArmor = $state<LoadoutItemWithComponents[]>([]);
+    let selectedExotic = $state<LoadoutItemWithComponents | null>(null);
     let isDrawerOpen = $state(false);
 
     $effect(() => {
@@ -23,7 +23,7 @@
         exoticArmor = await getArmorForClass(inventoryData, character.classType, 6);
     }
 
-    function handleSelect(exotic: InventoryItemWithComponents) {
+    function handleSelect(exotic: LoadoutItemWithComponents) {
         selectedExotic = exotic;
         onSelect(exotic);
         isDrawerOpen = false;
