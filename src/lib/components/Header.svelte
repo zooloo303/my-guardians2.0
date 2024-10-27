@@ -5,13 +5,16 @@
 	import { LogOut, RefreshCw } from 'lucide-svelte';
 	import NavTab from '$lib/components/NavTab.svelte';
 	import { Button } from '$lib/components/ui/button';
+	import Hamburger from '$lib/components/Hamburger.svelte';
 	import { refreshProfileData } from '$lib/utils/dataRefresh';
-	import LightSwitch from '$lib/components/LightSwitch.svelte';
 	import MembershipCard from '$lib/components/MembershipCard.svelte';
 	import { Avatar, AvatarImage, AvatarFallback } from '$lib/components/ui/avatar';
 	import { Popover, PopoverTrigger, PopoverContent } from '$lib/components/ui/popover';
 	// Props
-	let { user } = $props<{ user: UserData | null }>();
+	let { user, sidebarOpen = $bindable(false) } = $props<{ 
+		user: UserData | null; 
+		sidebarOpen: boolean 
+	}>();
 	let isLoading = $state(false);
 
 	async function logout() {
@@ -36,10 +39,16 @@
 <header class="mb-4 border-b p-4">
 	<div class="container mx-auto flex items-center justify-between">
 		<div class="flex flex-row space-x-2">
-			<LightSwitch />
+			<Hamburger bind:open={sidebarOpen} />
+			<!-- <LightSwitch /> -->
 			<h1 class="text-2xl font-bold">myGuardians</h1>
 		</div>
-		<NavTab />
+		
+		<!-- Hide NavTab on small screens (below md breakpoint) -->
+		<div class="hidden md:block">
+			<NavTab />
+		</div>
+
 		{#if user}
 			<div class="flex items-center space-x-4">
 				<Popover>
@@ -54,7 +63,7 @@
 									>{user.bungieNetUser.displayName.slice(0, 2).toUpperCase()}</AvatarFallback
 								>
 							</Avatar>
-							<span class="text-sm font-medium">{user.bungieNetUser.displayName}</span>
+							<span class="hidden sm:inline-block text-sm font-medium">{user.bungieNetUser.displayName}</span>
 						</div>
 					</PopoverTrigger>
 					<PopoverContent class="w-80">
@@ -63,14 +72,14 @@
 				</Popover>
 				<Button variant="outline" onclick={logout}>
 					<LogOut class="mr-2 h-4 w-4" />
-					Log out
+					<span class="hidden sm:inline-block">Log out</span>
 				</Button>
 				<Button onclick={handleRefresh} variant="ghost" size="icon" disabled={isLoading}>
-					{#if isLoading}
-						<RefreshCw class="h-[1.2rem] w-[1.2rem] animate-spin" />
-					{:else}
-						<RefreshCw class="h-[1.2rem] w-[1.2rem]" />
-					{/if}
+						{#if isLoading}
+							<RefreshCw class="h-[1.2rem] w-[1.2rem] animate-spin" />
+						{:else}
+							<RefreshCw class="h-[1.2rem] w-[1.2rem]" />
+						{/if}
 				</Button>
 			</div>
 		{:else}

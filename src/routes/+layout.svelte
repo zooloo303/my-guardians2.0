@@ -5,6 +5,7 @@
 	import { ModeWatcher } from 'mode-watcher';
 	import Header from '$lib/components/Header.svelte';
 	import { Toaster } from '$lib/components/ui/sonner';
+	import Sidebar from '$lib/components/Sidebar.svelte';
 	import { setNavContext } from '$lib/utils/navContext';
 	import { Progress } from '$lib/components/ui/progress';
 	import type { UserData, ProfileData } from '$lib/utils/types';
@@ -14,6 +15,7 @@
 	setNavContext($page.url.pathname);
 
 	let isUpdatingManifest = $state(false);
+	let sidebarOpen = $state(false);
 	let progress = $state(0);
 
 	onMount(async () => {
@@ -55,7 +57,8 @@
 </script>
 
 <ModeWatcher />
-<Header {user} />
+<Header {user}bind:sidebarOpen />
+<Sidebar bind:open={sidebarOpen} />
 <Toaster />
 <DataRefreshManager />
 
