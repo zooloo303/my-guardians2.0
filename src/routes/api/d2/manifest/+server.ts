@@ -6,6 +6,8 @@ interface ManifestTable {
 	[key: string]: object;
 }
 
+const BATCH_SIZE = 5; // Adjust based on your needs
+
 export const GET: RequestHandler = async ({ fetch }) => {
 	const manifestResponse = await fetch(`${bngBaseUrl}/Platform/Destiny2/Manifest/`);
 
@@ -19,12 +21,27 @@ export const GET: RequestHandler = async ({ fetch }) => {
 
 	const tables: Record<string, ManifestTable> = {};
 
-	for (const table of manifestTables) {
-		const tableResponse = await fetch(`${bngBaseUrl}${contentPaths[table]}`, {});
+	// Split manifestTables into batches
+	for (let i = 0; i < manifestTables.length; i += BATCH_SIZE) {
+		const batch = manifestTables.slice(i, i + BATCH_SIZE);
+		
+		const batchResults = await Promise.all(
+			batch.map(async (table) => {
+				const response = await fetch(`${bngBaseUrl}${contentPaths[table]}`);
+				if (response.ok) {
+					const data = await response.json();
+					return { table, data };
+				}
+				return { table, data: null };
+			})
+		);
 
-		if (tableResponse.ok) {
-			tables[table] = await tableResponse.json();
-		}
+		// Add successful results to tables
+		batchResults.forEach(({ table, data }) => {
+			if (data) {
+				tables[table] = data;
+			}
+		});
 	}
 
 	return json({ version, tables });
