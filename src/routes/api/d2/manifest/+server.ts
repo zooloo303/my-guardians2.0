@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { bngBaseUrl, manifestTables } from '$lib/utils/helpers';
 
-const CHUNK_SIZE = 5000; // Adjust this value based on performance
+const CHUNK_SIZE = 3000; // Adjust this value based on performance
 
 export const GET: RequestHandler = async ({ fetch, url }) => {
 	const tableParam = url.searchParams.get('table');
