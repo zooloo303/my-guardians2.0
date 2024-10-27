@@ -17,6 +17,7 @@
 	let isUpdatingManifest = $state(false);
 	let sidebarOpen = $state(false);
 	let progress = $state(0);
+	let currentTable = $state('');
 
 	onMount(async () => {
 		try {
@@ -28,25 +29,34 @@
 
 				if (version !== storedVersion) {
 					isUpdatingManifest = true;
-					// Simulating progress for demonstration
-					for (let i = 0; i <= 100; i += 10) {
-						progress = i;
-						await new Promise((resolve) => setTimeout(resolve, 200));
+					const totalTables = tables.length;
+					
+					for (let i = 0; i < tables.length; i++) {
+						const table = tables[i];
+						currentTable = table;
+						progress = Math.round((i / totalTables) * 100);
+
+						const tableResponse = await fetch(`/api/d2/manifest?table=${table}`);
+						if (tableResponse.ok) {
+							const { data } = await tableResponse.json();
+							await storeManifestData({ 
+								version, 
+								tables: { [table]: data } 
+							});
+						}
 					}
 
-					await storeManifestData({ version, tables });
 					console.log('New manifest data stored successfully');
 				} else {
 					console.log('Manifest is up to date');
 				}
-			} else {
-				console.error('Failed to fetch manifest data');
 			}
 		} catch (error) {
 			console.error('Error handling manifest data:', error);
 		} finally {
 			isUpdatingManifest = false;
 			progress = 0;
+			currentTable = '';
 		}
 	});
 
@@ -65,7 +75,12 @@
 {#if isUpdatingManifest}
 	<div class="fixed bottom-0 left-0 right-0 z-50 bg-background/80 p-4 backdrop-blur-sm">
 		<div class="mx-auto max-w-md">
-			<p class="mb-2 text-sm font-medium">Updating Manifest: {progress}%</p>
+			<p class="mb-2 text-sm font-medium">
+				Updating Manifest: {progress}%
+				{#if currentTable}
+					<span class="text-muted-foreground">({currentTable})</span>
+				{/if}
+			</p>
 			<Progress value={progress} max={100} />
 		</div>
 	</div>
