@@ -18,6 +18,8 @@
 	let sidebarOpen = $state(false);
 	let progress = $state(0);
 	let currentTable = $state('');
+	let currentChunk = $state(0);
+	let totalChunks = $state(0);
 
 	onMount(async () => {
 		try {
@@ -31,18 +33,33 @@
 					isUpdatingManifest = true;
 					const totalTables = tables.length;
 					
-					for (let i = 0; i < tables.length; i++) {
-						const table = tables[i];
+					for (let tableIndex = 0; tableIndex < tables.length; tableIndex++) {
+						const table = tables[tableIndex];
 						currentTable = table;
-						progress = Math.round((i / totalTables) * 100);
+						
+						// Get table metadata first
+						const tableMetaResponse = await fetch(`/api/d2/manifest?table=${table}`);
+						if (!tableMetaResponse.ok) continue;
+						
+						const { totalChunks: chunks } = await tableMetaResponse.json();
+						totalChunks = chunks;
 
-						const tableResponse = await fetch(`/api/d2/manifest?table=${table}`);
-						if (tableResponse.ok) {
-							const { data } = await tableResponse.json();
-							await storeManifestData({ 
-								version, 
-								tables: { [table]: data } 
-							});
+						// Fetch each chunk
+						for (let chunk = 0; chunk < chunks; chunk++) {
+							currentChunk = chunk + 1;
+							const chunkResponse = await fetch(`/api/d2/manifest?table=${table}&chunk=${chunk}`);
+							
+							if (chunkResponse.ok) {
+								const { data } = await chunkResponse.json();
+								await storeManifestData({ 
+									version, 
+									tables: { [table]: data } 
+								});
+							}
+
+							// Calculate overall progress
+							const tableProgress = (tableIndex + (chunk + 1) / chunks) / totalTables;
+							progress = Math.round(tableProgress * 100);
 						}
 					}
 
@@ -57,6 +74,8 @@
 			isUpdatingManifest = false;
 			progress = 0;
 			currentTable = '';
+			currentChunk = 0;
+			totalChunks = 0;
 		}
 	});
 
@@ -78,7 +97,9 @@
 			<p class="mb-2 text-sm font-medium">
 				Updating Manifest: {progress}%
 				{#if currentTable}
-					<span class="text-muted-foreground">({currentTable})</span>
+					<span class="text-muted-foreground">
+						({currentTable} - Chunk {currentChunk}/{totalChunks})
+					</span>
 				{/if}
 			</p>
 			<Progress value={progress} max={100} />
