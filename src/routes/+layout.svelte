@@ -19,8 +19,7 @@
 
 	setNavContext($page.url.pathname);
 
-	let isUpdatingManifest = $state(true); // Start as true to block UI initially
-	let manifestLoaded = $state(false);
+	let isUpdatingManifest = $state(false);
 	let sidebarOpen = $state(false);
 	let progress = $state(0);
 
@@ -33,6 +32,7 @@
 				const { version, tables } = await response.json();
 
 				if (version !== storedVersion) {
+					isUpdatingManifest = true;
 					// Simulating progress for demonstration
 					for (let i = 0; i <= 100; i += 10) {
 						progress = i;
@@ -44,7 +44,6 @@
 				} else {
 					console.log('Manifest is up to date');
 				}
-				manifestLoaded = true;
 			} else {
 				console.error('Failed to fetch manifest data');
 			}
@@ -62,32 +61,19 @@
 	let user = $state(data.user);
 </script>
 
-{#if !manifestLoaded}
-	<div class="fixed inset-0 z-50 flex items-center justify-center bg-background">
-		<div class="w-full max-w-md space-y-4 p-6">
-			<img src="/images/Bungie.svg" alt="Bungie Logo" class="mx-auto mb-8 w-32 opacity-50" />
-			<p class="text-center text-lg font-medium text-foreground">Loading Destiny 2 Manifest</p>
+<ModeWatcher />
+<Header {user} bind:sidebarOpen />
+<Sidebar bind:open={sidebarOpen} />
+<Toaster />
+<DataRefreshManager />
+
+{#if isUpdatingManifest}
+	<div class="fixed bottom-0 left-0 right-0 z-50 bg-background/80 p-4 backdrop-blur-sm">
+		<div class="mx-auto max-w-md">
+			<p class="mb-2 text-sm font-medium">Updating Manifest: {progress}%</p>
 			<Progress value={progress} max={100} />
-			<p class="text-center text-sm text-muted-foreground">
-				{progress}%
-			</p>
 		</div>
 	</div>
-{:else}
-	<ModeWatcher />
-	<Header {user} bind:sidebarOpen />
-	<Sidebar bind:open={sidebarOpen} />
-	<Toaster />
-	<DataRefreshManager />
-
-	{#if isUpdatingManifest}
-		<div class="fixed bottom-0 left-0 right-0 z-50 bg-background/80 p-4 backdrop-blur-sm">
-			<div class="mx-auto max-w-md">
-				<p class="mb-2 text-sm font-medium">Updating Manifest: {progress}%</p>
-				<Progress value={progress} max={100} />
-			</div>
-		</div>
-	{/if}
-
-	{@render children()}
 {/if}
+
+{@render children()}
