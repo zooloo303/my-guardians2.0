@@ -17,9 +17,6 @@
 	let isUpdatingManifest = $state(false);
 	let sidebarOpen = $state(false);
 	let progress = $state(0);
-	let currentTable = $state('');
-	let currentChunk = $state(0);
-	let totalChunks = $state(0);
 
 	onMount(async () => {
 		try {
@@ -31,51 +28,25 @@
 
 				if (version !== storedVersion) {
 					isUpdatingManifest = true;
-					const totalTables = tables.length;
-					
-					for (let tableIndex = 0; tableIndex < tables.length; tableIndex++) {
-						const table = tables[tableIndex];
-						currentTable = table;
-						
-						// Get table metadata first
-						const tableMetaResponse = await fetch(`/api/d2/manifest?table=${table}`);
-						if (!tableMetaResponse.ok) continue;
-						
-						const { totalChunks: chunks } = await tableMetaResponse.json();
-						totalChunks = chunks;
-
-						// Fetch each chunk
-						for (let chunk = 0; chunk < chunks; chunk++) {
-							currentChunk = chunk + 1;
-							const chunkResponse = await fetch(`/api/d2/manifest?table=${table}&chunk=${chunk}`);
-							
-							if (chunkResponse.ok) {
-								const { data } = await chunkResponse.json();
-								await storeManifestData({ 
-									version, 
-									tables: { [table]: data } 
-								});
-							}
-
-							// Calculate overall progress
-							const tableProgress = (tableIndex + (chunk + 1) / chunks) / totalTables;
-							progress = Math.round(tableProgress * 100);
-						}
+					// Simulating progress for demonstration
+					for (let i = 0; i <= 100; i += 10) {
+						progress = i;
+						await new Promise((resolve) => setTimeout(resolve, 200));
 					}
 
+					await storeManifestData({ version, tables });
 					console.log('New manifest data stored successfully');
 				} else {
 					console.log('Manifest is up to date');
 				}
+			} else {
+				console.error('Failed to fetch manifest data');
 			}
 		} catch (error) {
 			console.error('Error handling manifest data:', error);
 		} finally {
 			isUpdatingManifest = false;
 			progress = 0;
-			currentTable = '';
-			currentChunk = 0;
-			totalChunks = 0;
 		}
 	});
 
@@ -94,14 +65,7 @@
 {#if isUpdatingManifest}
 	<div class="fixed bottom-0 left-0 right-0 z-50 bg-background/80 p-4 backdrop-blur-sm">
 		<div class="mx-auto max-w-md">
-			<p class="mb-2 text-sm font-medium">
-				Updating Manifest: {progress}%
-				{#if currentTable}
-					<span class="text-muted-foreground">
-						({currentTable} - Chunk {currentChunk}/{totalChunks})
-					</span>
-				{/if}
-			</p>
+			<p class="mb-2 text-sm font-medium">Updating Manifest: {progress}%</p>
 			<Progress value={progress} max={100} />
 		</div>
 	</div>

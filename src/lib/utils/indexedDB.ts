@@ -35,17 +35,17 @@ export async function openDatabase(): Promise<IDBDatabase> {
 
 export async function storeManifestData(data: ManifestData): Promise<void> {
 	const db = await openDatabase();
-	const transaction = db.transaction(['version', ...Object.keys(data.tables)], 'readwrite');
+	const transaction = db.transaction(['version', ...manifestTables], 'readwrite');
 
-	// Store or update version
+	// Store version
 	const versionStore = transaction.objectStore('version');
-	await versionStore.put({ id: 'current', version: data.version });
+	versionStore.put({ id: 'current', version: data.version });
 
 	// Store table data
 	for (const [table, tableData] of Object.entries(data.tables)) {
 		const objectStore = transaction.objectStore(table);
 		for (const [hash, item] of Object.entries(tableData)) {
-			await objectStore.put({ hash: Number(hash), ...item });
+			objectStore.put({ hash: Number(hash), ...item });
 		}
 	}
 
@@ -96,3 +96,4 @@ export async function getManifestTable<T>(table: string): Promise<Record<number,
 	  };
 	});
   }
+  
