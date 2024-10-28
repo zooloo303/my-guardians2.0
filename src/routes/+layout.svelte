@@ -11,17 +11,23 @@
 	import type { UserData, ProfileData } from '$lib/utils/types';
 	import DataRefreshManager from '$lib/components/DataRefreshManager.svelte';
 	import { storeManifestData, getManifestVersion } from '$lib/utils/indexedDB';
-	
+	// Props
+	let { data, children } = $props<{
+		data: { user: UserData | null; profileData: ProfileData | null };
+	}>();
+	let user = $state(data.user);
+
+	// State
+	let isUpdatingManifest = $state(false);
+	let sidebarOpen = $state(false);
+	let progress = $state(0);
+
 	// Force dark mode immediately on load
 	if (typeof window !== 'undefined') {
 		document.documentElement.classList.add('dark');
 	}
 
 	setNavContext($page.url.pathname);
-
-	let isUpdatingManifest = $state(false);
-	let sidebarOpen = $state(false);
-	let progress = $state(0);
 
 	onMount(async () => {
 		try {
@@ -54,11 +60,6 @@
 			progress = 0;
 		}
 	});
-
-	let { data, children } = $props<{
-		data: { user: UserData | null; profileData: ProfileData | null };
-	}>();
-	let user = $state(data.user);
 </script>
 
 <ModeWatcher />
