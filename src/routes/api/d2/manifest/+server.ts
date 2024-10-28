@@ -8,7 +8,7 @@ interface ManifestTable {
 
 const BATCH_SIZE = 5; // Adjust based on your needs
 
-export const GET: RequestHandler = async ({ fetch }) => {
+export const GET: RequestHandler = async ({ fetch, setHeaders }) => {
 	const manifestResponse = await fetch(`${bngBaseUrl}/Platform/Destiny2/Manifest/`);
 
 	if (!manifestResponse.ok) {
@@ -18,6 +18,13 @@ export const GET: RequestHandler = async ({ fetch }) => {
 	const manifestData = await manifestResponse.json();
 	const version = manifestData.Response.version;
 	const contentPaths = manifestData.Response.jsonWorldComponentContentPaths.en;
+
+	// Set cache headers
+	setHeaders({
+		'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+		'Vercel-CDN-Cache-Control': 'max-age=3600',
+		'CDN-Cache-Control': 'max-age=60'
+	  });
 
 	const tables: Record<string, ManifestTable> = {};
 

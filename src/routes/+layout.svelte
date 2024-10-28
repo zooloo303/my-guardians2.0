@@ -11,6 +11,9 @@
 	import type { UserData, ProfileData } from '$lib/utils/types';
 	import DataRefreshManager from '$lib/components/DataRefreshManager.svelte';
 	import { storeManifestData, getManifestVersion } from '$lib/utils/indexedDB';
+
+	import ManifestManager from '$lib/components/ManifestManager.svelte';
+
 	// Props
 	let { data, children } = $props<{
 		data: { user: UserData | null; profileData: ProfileData | null };
@@ -29,37 +32,37 @@
 
 	setNavContext($page.url.pathname);
 
-	onMount(async () => {
-		try {
-			const storedVersion = await getManifestVersion();
-			const response = await fetch('/api/d2/manifest');
+	// onMount(async () => {
+	// 	try {
+	// 		const storedVersion = await getManifestVersion();
+	// 		const response = await fetch('/api/d2/manifest');
 
-			if (response.ok) {
-				const { version, tables } = await response.json();
+	// 		if (response.ok) {
+	// 			const { version, tables } = await response.json();
 
-				if (version !== storedVersion) {
-					isUpdatingManifest = true;
-					// Simulating progress for demonstration
-					for (let i = 0; i <= 100; i += 10) {
-						progress = i;
-						await new Promise((resolve) => setTimeout(resolve, 200));
-					}
+	// 			if (version !== storedVersion) {
+	// 				isUpdatingManifest = true;
+	// 				// Simulating progress for demonstration
+	// 				for (let i = 0; i <= 100; i += 10) {
+	// 					progress = i;
+	// 					await new Promise((resolve) => setTimeout(resolve, 200));
+	// 				}
 
-					await storeManifestData({ version, tables });
-					console.log('New manifest data stored successfully');
-				} else {
-					console.log('Manifest is up to date');
-				}
-			} else {
-				console.error('Failed to fetch manifest data');
-			}
-		} catch (error) {
-			console.error('Error handling manifest data:', error);
-		} finally {
-			isUpdatingManifest = false;
-			progress = 0;
-		}
-	});
+	// 				await storeManifestData({ version, tables });
+	// 				console.log('New manifest data stored successfully');
+	// 			} else {
+	// 				console.log('Manifest is up to date');
+	// 			}
+	// 		} else {
+	// 			console.error('Failed to fetch manifest data');
+	// 		}
+	// 	} catch (error) {
+	// 		console.error('Error handling manifest data:', error);
+	// 	} finally {
+	// 		isUpdatingManifest = false;
+	// 		progress = 0;
+	// 	}
+	// });
 </script>
 
 <ModeWatcher />
@@ -68,13 +71,8 @@
 <Toaster />
 <DataRefreshManager />
 
-{#if isUpdatingManifest}
-	<div class="fixed bottom-0 left-0 right-0 z-50 bg-background/80 p-4 backdrop-blur-sm">
-		<div class="mx-auto max-w-md">
-			<p class="mb-2 text-sm font-medium">Updating Manifest: {progress}%</p>
-			<Progress value={progress} max={100} />
-		</div>
-	</div>
+{#if user}
+  <ManifestManager />
 {/if}
 
 {@render children()}

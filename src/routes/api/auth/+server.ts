@@ -45,6 +45,7 @@ export const GET: RequestHandler = async ({ url, fetch, cookies }) => {
 	});
 
 	// Goto home page
+	await fetch('/api/d2/manifest'); 
 	redirect(302, '/');
 };
 
