@@ -1,6 +1,6 @@
 <script lang="ts">
-  import * as Alert from "$lib/components/ui/alert";
   import { AlertTriangle } from "lucide-svelte";
+  import * as Alert from "$lib/components/ui/alert";
   import { maintenanceStatus } from '$lib/utils/apiStatus';
 </script>
 

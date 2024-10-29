@@ -1,9 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Progress } from '$lib/components/ui/progress';
-  import { getManifestVersion, storeManifestData } from '$lib/utils/indexedDB';
   import { invalidateAll } from '$app/navigation';
   import { checkApiStatus } from '$lib/utils/apiStatus';
+  import { Progress } from '$lib/components/ui/progress';
+  import { getManifestVersion, storeManifestData } from '$lib/utils/indexedDB';
   
   let isUpdatingManifest = $state(false);
   let progress = $state(0);
@@ -40,7 +40,7 @@
   
   onMount(() => {
     checkAndUpdateManifest();
-    const interval = setInterval(checkApiStatus, 60000);
+    const interval = setInterval(checkAndUpdateManifest, 14400000);
     return () => clearInterval(interval);
   });
 </script>

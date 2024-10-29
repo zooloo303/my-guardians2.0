@@ -14,15 +14,10 @@ export const maintenanceStatus: Writable<MaintenanceStatus> = writable({
 
 export async function checkApiStatus() {
   try {
-    console.log('Checking API status...');
     const settingsResponse = await fetch('https://www.bungie.net/Platform/Settings/');
     const settingsData = await settingsResponse.json();
     
-    const isDestiny2Disabled = !settingsData.Response?.Systems?.Destiny2?.enabled;
-    console.log('API Status:', {
-      isDestiny2Disabled,
-      destiny2System: settingsData.Response?.Systems?.Destiny2
-    });
+    const isDestiny2Disabled = !settingsData.Response?.systems?.Destiny2?.enabled;
     
     if (isDestiny2Disabled) {
       console.log('API is disabled, fetching alerts...');
@@ -38,7 +33,6 @@ export async function checkApiStatus() {
         timestamp: maintenanceAlert.AlertTimestamp
       });
     } else {
-      console.log('API is enabled, resetting maintenance status');
       maintenanceStatus.set({ enabled: false, message: '', timestamp: '' });
     }
   } catch (error) {
