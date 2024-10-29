@@ -3,12 +3,15 @@
   import { Progress } from '$lib/components/ui/progress';
   import { getManifestVersion, storeManifestData } from '$lib/utils/indexedDB';
   import { invalidateAll } from '$app/navigation';
+  import { checkApiStatus } from '$lib/utils/apiStatus';
   
   let isUpdatingManifest = $state(false);
   let progress = $state(0);
   
   async function checkAndUpdateManifest() {
     try {
+      await checkApiStatus();
+      
       const storedVersion = await getManifestVersion();
       const response = await fetch('/api/d2/manifest');
       
@@ -24,9 +27,7 @@
         }
         
         await storeManifestData({ version, tables });
-        // Invalidate all data and force a refresh
         await invalidateAll();
-        // Force page reload to ensure clean state
         window.location.reload();
       }
     } catch (error) {
@@ -37,7 +38,11 @@
     }
   }
   
-  onMount(checkAndUpdateManifest);
+  onMount(() => {
+    checkAndUpdateManifest();
+    const interval = setInterval(checkApiStatus, 60000);
+    return () => clearInterval(interval);
+  });
 </script>
 
 {#if isUpdatingManifest}

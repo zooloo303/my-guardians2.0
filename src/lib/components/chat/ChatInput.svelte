@@ -15,7 +15,7 @@
 >
     <Input 
         value={$input}
-        on:input={(e) => input.set(e.currentTarget.value)}
+        oninput={(e) => input.set(e.currentTarget.value)}
         class="flex-1" 
         placeholder="Message" 
     />
