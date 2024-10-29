@@ -14,14 +14,16 @@ function getTabValue(path: string) {
   if (path === '/') return 'home';
   if (path.startsWith('/loadouts')) return 'loadout';
   if (path.startsWith('/inventory')) return 'inventory';
+  if (path.startsWith('/chat')) return 'chat';
   return 'home';
 }
 </script>
 
 <Tabs.Root value={getTabValue(currentPath)} class="w-[400px]">
-  <Tabs.List class="grid w-full grid-cols-3">
+  <Tabs.List class="grid w-full grid-cols-4">
     <Tabs.Trigger value="home" onclick={() => goto('/')}>Characters</Tabs.Trigger>
     <Tabs.Trigger value="loadout" onclick={() => goto('/loadouts')}>Loadouts</Tabs.Trigger>
     <Tabs.Trigger value="inventory" onclick={() => goto('/inventory')}>Inventory</Tabs.Trigger>
+    <Tabs.Trigger value="chat" onclick={() => goto('/chat')}>SweeperBot</Tabs.Trigger>
   </Tabs.List>
 </Tabs.Root>

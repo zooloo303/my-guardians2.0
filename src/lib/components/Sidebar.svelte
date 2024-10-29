@@ -27,6 +27,7 @@
 			<a class="block pl-4 text-muted-foreground" href="/loadouts/optimizer">Optimizer</a>
 		</div>
 		<a class="block" href="/inventory">Inventory</a>
+		<a class="block" href="/chat">SweeperBot</a>
 	</nav>
 </aside>
 
